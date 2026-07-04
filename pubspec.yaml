@@ -1,0 +1,51 @@
+name: bill_splitter
+description: "Offline-first bill splitting app (equal, itemized, party) built with Flutter."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management
+  provider: ^6.1.2
+
+  # Dependency injection / service locator
+  get_it: ^8.0.2
+
+  # Local persistence
+  sqflite: ^2.4.1
+  path: ^1.9.0
+  path_provider: ^2.1.5
+  shared_preferences: ^2.3.3
+
+  # Formatting & localization
+  intl: any
+
+  # IDs
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  fonts:
+    # Kantumruy Pro (Google Fonts, OFL) — used for Khmer text. It is a variable
+    # font, so a single asset covers all weights.
+    - family: Kantumruy Pro
+      fonts:
+        - asset: assets/fonts/KantumruyPro-Variable.ttf

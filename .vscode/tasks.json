@@ -1,0 +1,56 @@
+{
+  "version": "2.0.0",
+  "options": {
+    "cwd": "${workspaceFolder}"
+  },
+  "presentation": {
+    "reveal": "always",
+    "panel": "shared",
+    "clear": true
+  },
+  "tasks": [
+    {
+      "label": "build apk: dev (release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "apk", "--flavor", "dev", "-t", "lib/main_dev.dart", "--release", "--target-platform", "android-arm,android-arm64"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "build apk: staging (release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "apk", "--flavor", "staging", "-t", "lib/main_staging.dart", "--release", "--target-platform", "android-arm,android-arm64"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "build apk: prod (release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "apk", "--flavor", "prod", "-t", "lib/main.dart", "--release", "--target-platform", "android-arm,android-arm64"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "build appbundle: prod (release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "appbundle", "--flavor", "prod", "-t", "lib/main.dart", "--release"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "build appbundle: staging (release)",
+      "type": "shell",
+      "command": "flutter",
+      "args": ["build", "appbundle", "--flavor", "staging", "-t", "lib/main_staging.dart", "--release"],
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -12,6 +12,7 @@ const List<SupportedCurrency> kSupportedCurrencies = [
   SupportedCurrency('GBP', 'British Pound'),
   SupportedCurrency('JPY', 'Japanese Yen'),
   SupportedCurrency('THB', 'Thai Baht'),
+  SupportedCurrency('KHR', 'Cambodian ៛'),
   SupportedCurrency('SGD', 'Singapore Dollar'),
   SupportedCurrency('AUD', 'Australian Dollar'),
   SupportedCurrency('CAD', 'Canadian Dollar'),

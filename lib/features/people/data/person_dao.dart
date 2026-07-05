@@ -37,11 +37,30 @@ class PersonDao {
 
   Future<void> delete(int id) async {
     final db = await _db;
-    await db.delete(
-      Db.tablePerson,
-      where: '${Db.personId} = ?',
-      whereArgs: [id],
-    );
+    await db.transaction((txn) async {
+      // Remove all child rows that reference this person so the FK constraint
+      // (which has no ON DELETE CASCADE in the schema) does not block deletion.
+      await txn.delete(
+        Db.tableBillParticipant,
+        where: '${Db.participantPersonId} = ?',
+        whereArgs: [id],
+      );
+      await txn.delete(
+        Db.tableItemAssignment,
+        where: '${Db.assignmentPersonId} = ?',
+        whereArgs: [id],
+      );
+      await txn.delete(
+        Db.tableContribution,
+        where: '${Db.contributionPersonId} = ?',
+        whereArgs: [id],
+      );
+      await txn.delete(
+        Db.tablePerson,
+        where: '${Db.personId} = ?',
+        whereArgs: [id],
+      );
+    });
   }
 
   /// Whether the person is referenced by any bill (participant, item

@@ -8,7 +8,9 @@ import '../../features/bills/presentation/equal_editor_screen.dart';
 import '../../features/bills/presentation/itemized_editor_screen.dart';
 import '../../features/bills/presentation/party_editor_screen.dart';
 import '../../features/people/presentation/people_screen.dart';
+import '../../features/people/presentation/person_profile_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
+import '../../shared/models/person.dart';
 import 'route_names.dart';
 
 /// Central route generator. Routes that operate on a bill receive its id as the
@@ -40,8 +42,17 @@ class AppRouter {
       case RouteNames.billDetail:
         return _page(
             BillDetailScreen(billId: settings.arguments as int), settings);
+      case RouteNames.billDetailReadOnly:
+        return _page(
+            BillDetailScreen(
+                billId: settings.arguments as int, readOnly: true),
+            settings);
       case RouteNames.people:
         return _page(const PeopleScreen(), settings);
+      case RouteNames.personProfile:
+        return _page(
+            PersonProfileScreen(person: settings.arguments as Person),
+            settings);
       case RouteNames.settings:
         return _page(const SettingsScreen(), settings);
       default:

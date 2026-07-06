@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/localization/generated/app_localizations.dart';
+import '../../../shared/widgets/muted_text.dart';
 import 'onboarding_controller.dart';
 
 class _Page {
@@ -91,11 +92,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             style: theme.textTheme.headlineSmall,
                             textAlign: TextAlign.center),
                         const SizedBox(height: 16),
-                        Text(
+                        MutedText(
                           page.body,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
+                          style: theme.textTheme.bodyLarge,
                           textAlign: TextAlign.center,
                         ),
                       ],

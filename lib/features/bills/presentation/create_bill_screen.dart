@@ -5,11 +5,12 @@ import '../../../core/di/service_locator.dart';
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/routing/route_names.dart';
 import '../../../shared/models/bill_type.dart';
+import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/participant_picker.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../../people/domain/person_repository.dart';
-import '../../settings/domain/supported_currencies.dart';
-import '../domain/bill_repository.dart';
+import '../../../core/repository/people/person_repository.dart';
+import '../../../core/constants/supported_currencies.dart';
+import '../../../core/repository/bills/bill_repository.dart';
 import 'bill_editor_args.dart';
 import 'create_bill_view_model.dart';
 import 'widgets/bill_type_visuals.dart';
@@ -68,12 +69,10 @@ class _CreateBillView extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                TextField(
+                AppTextField(
+                  label: l10n.billTitleLabel,
+                  hint: l10n.billTitleHint,
                   textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    labelText: l10n.billTitleLabel,
-                    hintText: l10n.billTitleHint,
-                  ),
                   onChanged: viewModel.setTitle,
                 ),
                 const SizedBox(height: 16),
@@ -143,14 +142,7 @@ class _CurrencySelector extends StatelessWidget {
         trailing: DropdownButton<String>(
           value: selectedCode,
           underline: const SizedBox.shrink(),
-          // Show the compact code when collapsed; full label in the open menu.
-          selectedItemBuilder: (context) => [
-            for (final currency in kSupportedCurrencies)
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(currency.code),
-              ),
-          ],
+          // Show the full "CODE · label" text both when collapsed and in the menu.
           onChanged: (code) {
             if (code != null) onSelect(code);
           },

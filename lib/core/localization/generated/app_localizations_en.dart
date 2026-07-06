@@ -270,6 +270,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inactive => 'Inactive';
 
   @override
+  String get personNoBills => 'This person isn\'t in any bill yet.';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override

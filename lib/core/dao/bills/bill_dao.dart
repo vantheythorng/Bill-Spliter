@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 
-import '../../../core/database/app_database.dart';
-import '../../../core/database/database_schema.dart';
+import '../../database/base_dao.dart';
+import '../../database/database_schema.dart';
 import '../../../shared/models/bill.dart';
 import '../../../shared/models/bill_detail.dart';
 import '../../../shared/models/bill_item.dart';
@@ -12,21 +12,40 @@ import '../../../shared/models/person.dart';
 /// Data-access object for a bill and all its child rows. Writes happen inside a
 /// single transaction so a bill and its participants/items/contributions are
 /// always saved consistently.
-class BillDao {
-  BillDao(this._appDatabase);
-
-  final AppDatabase _appDatabase;
-
-  Future<Database> get _db => _appDatabase.database;
+class BillDao extends BaseDao {
+  const BillDao(super.appDatabase);
 
   Future<List<Bill>> getBills() async {
-    final db = await _db;
+    final db = await this.db;
     final rows = await db.query(Db.tableBill, orderBy: '${Db.billUpdatedAt} DESC');
     return rows.map(Bill.fromMap).toList();
   }
 
+  /// Every bill the person appears in — as a participant, on an item, or as a
+  /// party contributor — most-recently-updated first. Mirrors the three-table
+  /// definition of "referenced" used by [PersonDao.referencedIds].
+  Future<List<Bill>> getBillsForPerson(int personId) async {
+    final db = await this.db;
+    final rows = await db.rawQuery('''
+      SELECT b.* FROM ${Db.tableBill} b
+      WHERE b.${Db.billId} IN (
+        SELECT ${Db.participantBillId} FROM ${Db.tableBillParticipant}
+          WHERE ${Db.participantPersonId} = ?
+        UNION
+        SELECT i.${Db.itemBillId} FROM ${Db.tableItemAssignment} a
+          JOIN ${Db.tableBillItem} i ON i.${Db.itemId} = a.${Db.assignmentItemId}
+          WHERE a.${Db.assignmentPersonId} = ?
+        UNION
+        SELECT ${Db.contributionBillId} FROM ${Db.tableContribution}
+          WHERE ${Db.contributionPersonId} = ?
+      )
+      ORDER BY b.${Db.billUpdatedAt} DESC
+    ''', [personId, personId, personId]);
+    return rows.map(Bill.fromMap).toList();
+  }
+
   Future<BillDetail?> getDetail(int billId) async {
-    final db = await _db;
+    final db = await this.db;
     final billRows = await db.query(
       Db.tableBill,
       where: '${Db.billId} = ?',
@@ -100,7 +119,7 @@ class BillDao {
   /// Inserts or updates the whole bill aggregate atomically and returns the
   /// bill id.
   Future<int> save(BillDetail detail) async {
-    final db = await _db;
+    final db = await this.db;
     return db.transaction((txn) async {
       final billMap = detail.bill.toMap();
       int billId;
@@ -167,7 +186,7 @@ class BillDao {
   }
 
   Future<void> delete(int billId) async {
-    final db = await _db;
+    final db = await this.db;
     await db.delete(
       Db.tableBill,
       where: '${Db.billId} = ?',

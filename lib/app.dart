@@ -10,8 +10,8 @@ import 'core/theme/app_theme.dart';
 import 'features/bills/presentation/bills_screen.dart';
 import 'features/onboarding/presentation/onboarding_controller.dart';
 import 'features/onboarding/presentation/onboarding_screen.dart';
-import 'features/settings/domain/app_language.dart';
-import 'features/settings/domain/supported_currencies.dart';
+import 'shared/utils/app_language.dart';
+import 'core/constants/supported_currencies.dart';
 import 'features/settings/presentation/settings_provider.dart';
 import 'shared/utils/currency_formatter.dart';
 

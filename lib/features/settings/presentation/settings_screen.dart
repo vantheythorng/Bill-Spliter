@@ -6,7 +6,7 @@ import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/routing/route_names.dart';
 import '../../../shared/utils/rounding_mode.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../domain/app_language.dart';
+import '../../../shared/utils/app_language.dart';
 import 'settings_provider.dart';
 
 /// Settings: theme, language, currency, people management and about.

@@ -6,13 +6,14 @@ import '../../../core/localization/generated/app_localizations.dart';
 import '../../../shared/models/bill_item.dart';
 import '../../../shared/utils/validators.dart';
 import '../../../shared/widgets/amount_text.dart';
+import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/participant_picker.dart';
 import '../../../shared/widgets/person_avatar.dart';
 import '../../../shared/widgets/section_header.dart';
-import '../../../shared/widgets/participant_picker.dart';
-import '../../people/domain/person_repository.dart';
-import '../domain/bill_repository.dart';
-import '../domain/services/split_service.dart';
+import '../../../core/repository/people/person_repository.dart';
+import '../../../core/repository/bills/bill_repository.dart';
+import '../../../core/services/bills/split_service.dart';
 import 'bill_editor_view_model.dart';
 import 'editor_navigation.dart';
 import 'widgets/item_form_dialog.dart';
@@ -88,10 +89,10 @@ class _ItemizedEditorView extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
               children: [
-                TextFormField(
+                AppTextField(
+                  label: l10n.billTitleLabel,
                   initialValue: detail.bill.title,
                   textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(labelText: l10n.billTitleLabel),
                   onChanged: viewModel.setTitle,
                 ),
                 const SizedBox(height: 16),
@@ -230,15 +231,11 @@ class _PaidFieldState extends State<_PaidField> {
           Expanded(child: Text(widget.label)),
           SizedBox(
             width: 120,
-            child: TextField(
+            child: AppTextField.amount(
               controller: _controller,
               textAlign: TextAlign.end,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                isDense: true,
-                labelText: l10n.paidAmountLabel,
-              ),
+              isDense: true,
+              label: l10n.paidAmountLabel,
               onChanged: (value) =>
                   widget.onChanged(NumberParsing.tryParseAmount(value) ?? 0),
             ),

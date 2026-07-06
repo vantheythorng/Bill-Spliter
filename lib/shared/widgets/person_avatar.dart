@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../models/person.dart';
 import '../utils/avatar_color.dart';
 
-/// A circular avatar showing a person's initials on a stable, seeded color.
+/// A circular avatar showing a person's first initial + id on a stable, seeded
+/// color.
 class PersonAvatar extends StatelessWidget {
   const PersonAvatar({super.key, required this.person, this.radius = 20});
 
@@ -18,12 +19,18 @@ class PersonAvatar extends StatelessWidget {
     return CircleAvatar(
       radius: radius,
       backgroundColor: background,
-      child: Text(
-        AvatarColor.initials(person.name),
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-          fontSize: radius * 0.8,
+      // Labels vary in length (e.g. "A" vs "A12"), so scale the text to fit
+      // inside the circle instead of using a fixed font size.
+      child: Padding(
+        padding: EdgeInsets.all(radius * 0.22),
+        child: FittedBox(
+          child: Text(
+            AvatarColor.label(person.name, person.id),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );

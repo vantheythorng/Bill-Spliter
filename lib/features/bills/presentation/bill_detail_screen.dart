@@ -11,18 +11,25 @@ import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/person_avatar.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../settings/presentation/settings_provider.dart';
-import '../domain/bill_repository.dart';
-import '../domain/services/split_service.dart';
+import '../../../core/repository/bills/bill_repository.dart';
+import '../../../core/services/bills/split_service.dart';
 import 'bill_detail_view_model.dart';
 import 'bill_editor_args.dart';
 import 'widgets/bill_type_visuals.dart';
 import 'widgets/rounding_summary.dart';
 
-/// Read-only bill summary: per-person breakdown and settle-up transactions.
+/// Bill summary: per-person breakdown and settle-up transactions. Editable by
+/// default; pass [readOnly] (e.g. when opened from a person's profile) to hide
+/// the edit and delete actions.
 class BillDetailScreen extends StatelessWidget {
-  const BillDetailScreen({super.key, required this.billId});
+  const BillDetailScreen({
+    super.key,
+    required this.billId,
+    this.readOnly = false,
+  });
 
   final int billId;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +38,16 @@ class BillDetailScreen extends StatelessWidget {
         getIt<BillRepository>(),
         getIt<SplitService>(),
       )..load(billId),
-      child: _BillDetailView(billId: billId),
+      child: _BillDetailView(billId: billId, readOnly: readOnly),
     );
   }
 }
 
 class _BillDetailView extends StatelessWidget {
-  const _BillDetailView({required this.billId});
+  const _BillDetailView({required this.billId, required this.readOnly});
 
   final int billId;
+  final bool readOnly;
 
   /// Formatter for the bill's own currency, falling back to the app default
   /// (which is what "system currency" bills use).
@@ -107,16 +115,18 @@ class _BillDetailView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(bill.title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit_outlined),
-            onPressed: () => _edit(context, bill.type),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () => _delete(context),
-          ),
-        ],
+        actions: readOnly
+            ? null
+            : [
+                IconButton(
+                  icon: const Icon(Icons.edit_outlined),
+                  onPressed: () => _edit(context, bill.type),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: () => _delete(context),
+                ),
+              ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),

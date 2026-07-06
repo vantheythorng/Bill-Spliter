@@ -6,6 +6,9 @@ abstract class BillRepository {
   /// All bills, most-recently-updated first (for the home list).
   Future<List<Bill>> getBills();
 
+  /// Every bill the given person appears in, most-recently-updated first.
+  Future<List<Bill>> getBillsForPerson(int personId);
+
   /// The fully-loaded aggregate for a single bill, or null if it was deleted.
   Future<BillDetail?> getBillDetail(int billId);
 

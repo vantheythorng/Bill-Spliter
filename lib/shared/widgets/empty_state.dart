@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'muted_text.dart';
+
 /// A centered icon + title + body used for empty lists across the app.
 class EmptyState extends StatelessWidget {
   const EmptyState({
@@ -28,13 +30,7 @@ class EmptyState extends StatelessWidget {
             const SizedBox(height: 16),
             Text(title, style: theme.textTheme.titleLarge),
             const SizedBox(height: 8),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
+            MutedText(message, textAlign: TextAlign.center),
             if (action != null) ...[
               const SizedBox(height: 24),
               action!,

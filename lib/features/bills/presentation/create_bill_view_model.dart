@@ -5,9 +5,9 @@ import '../../../shared/models/bill_detail.dart';
 import '../../../shared/models/bill_participant.dart';
 import '../../../shared/models/bill_type.dart';
 import '../../../shared/models/person.dart';
-import '../../people/domain/person_repository.dart';
-import '../../settings/domain/supported_currencies.dart';
-import '../domain/bill_repository.dart';
+import '../../../core/repository/people/person_repository.dart';
+import '../../../core/constants/supported_currencies.dart';
+import '../../../core/repository/bills/bill_repository.dart';
 
 /// Drives the first step of bill creation: title, split type and participant
 /// selection (with inline quick-add). Persists a draft bill and returns its id

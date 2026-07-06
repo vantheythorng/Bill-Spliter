@@ -4,14 +4,15 @@ import 'package:provider/provider.dart';
 import '../../../core/di/service_locator.dart';
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../shared/widgets/amount_text.dart';
+import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/empty_state.dart';
-import '../../../shared/widgets/person_avatar.dart';
-import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/participant_picker.dart';
-import '../../people/domain/person_repository.dart';
+import '../../../shared/widgets/person_amount_tile.dart';
+import '../../../shared/widgets/section_header.dart';
+import '../../../core/repository/people/person_repository.dart';
 import '../../settings/presentation/settings_provider.dart';
-import '../domain/bill_repository.dart';
-import '../domain/services/split_service.dart';
+import '../../../core/repository/bills/bill_repository.dart';
+import '../../../core/services/bills/split_service.dart';
 import 'bill_editor_view_model.dart';
 import 'editor_navigation.dart';
 import 'widgets/contribution_form_dialog.dart';
@@ -94,10 +95,10 @@ class _PartyEditorView extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
         children: [
-          TextFormField(
+          AppTextField(
+            label: l10n.billTitleLabel,
             initialValue: detail.bill.title,
             textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(labelText: l10n.billTitleLabel),
             onChanged: viewModel.setTitle,
           ),
           const SizedBox(height: 16),
@@ -147,50 +148,31 @@ class _PartyEditorView extends StatelessWidget {
             )
           else
             for (var i = 0; i < detail.contributions.length; i++)
-              Builder(builder: (context) {
-                final c = detail.contributions[i];
-                final person = viewModel.personById(c.personId);
-                return Card(
-                  child: ListTile(
-                    leading: person == null
-                        ? const CircleAvatar(child: Icon(Icons.person))
-                        : PersonAvatar(person: person, radius: 16),
-                    title: Text(person?.name ?? '—'),
-                    subtitle: c.label == null ? null : Text(c.label!),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AmountText(c.amount, currencyCode: currency),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline),
-                          onPressed: () => viewModel.removeContribution(i),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
+              PersonAmountTile(
+                person: viewModel.personById(detail.contributions[i].personId),
+                amount: detail.contributions[i].amount,
+                currencyCode: currency,
+                subtitle: detail.contributions[i].label,
+                avatarRadius: 16,
+                onDelete: () => viewModel.removeContribution(i),
+              ),
           const SizedBox(height: 8),
           SectionHeader(title: l10n.breakdownLabel),
           for (final share in preview.shares)
-            Builder(builder: (context) {
-              final person = viewModel.personById(share.personId);
-              final positive = share.balance >= 0;
-              return ListTile(
-                leading: person == null
-                    ? const CircleAvatar(child: Icon(Icons.person))
-                    : PersonAvatar(person: person, radius: 16),
-                title: Text(person?.name ?? '—'),
-                trailing: AmountText(
-                  share.balance.abs(),
-                  currencyCode: currency,
-                  color: positive ? Colors.green : theme.colorScheme.error,
-                  style: theme.textTheme.titleMedium,
-                ),
-                subtitle:
-                    Text(positive ? l10n.getsBackLabel : l10n.owesLabel),
-              );
-            }),
+            PersonAmountTile(
+              person: viewModel.personById(share.personId),
+              amount: share.balance.abs(),
+              currencyCode: currency,
+              subtitle: share.balance >= 0
+                  ? l10n.getsBackLabel
+                  : l10n.owesLabel,
+              amountColor: share.balance >= 0
+                  ? Colors.green
+                  : theme.colorScheme.error,
+              amountStyle: theme.textTheme.titleMedium,
+              avatarRadius: 16,
+              card: false,
+            ),
           if (preview.shares.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),

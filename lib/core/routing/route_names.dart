@@ -9,6 +9,8 @@ class RouteNames {
   static const String itemizedEditor = '/bills/editor/itemized';
   static const String partyEditor = '/bills/editor/party';
   static const String billDetail = '/bills/detail';
+  static const String billDetailReadOnly = '/bills/detail/view';
   static const String people = '/people';
+  static const String personProfile = '/people/profile';
   static const String settings = '/settings';
 }

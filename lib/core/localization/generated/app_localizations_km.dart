@@ -271,6 +271,9 @@ class AppLocalizationsKm extends AppLocalizations {
   String get inactive => 'អសកម្ម';
 
   @override
+  String get personNoBills => 'មនុស្សនេះមិនទាន់មាននៅក្នុងវិក្កយបត្រណាមួយទេ។';
+
+  @override
   String get settingsTitle => 'ការកំណត់';
 
   @override

@@ -1,4 +1,4 @@
-import 'package:bill_splitter/features/bills/domain/services/split_service.dart';
+import 'package:bill_splitter/core/services/bills/split_service.dart';
 import 'package:bill_splitter/shared/models/bill.dart';
 import 'package:bill_splitter/shared/models/bill_detail.dart';
 import 'package:bill_splitter/shared/models/bill_item.dart';

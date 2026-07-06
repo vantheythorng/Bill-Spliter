@@ -1,4 +1,4 @@
-import 'package:bill_splitter/features/bills/domain/services/settle_up_service.dart';
+import 'package:bill_splitter/core/services/bills/settle_up_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

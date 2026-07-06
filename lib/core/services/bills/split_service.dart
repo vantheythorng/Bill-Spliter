@@ -1,8 +1,8 @@
-import '../../../../shared/models/bill_detail.dart';
-import '../../../../shared/models/bill_type.dart';
-import '../../../../shared/models/settlement.dart';
-import '../../../../shared/utils/money.dart';
-import '../../../../shared/utils/rounding_mode.dart';
+import '../../../shared/models/bill_detail.dart';
+import '../../../shared/models/bill_type.dart';
+import '../../../shared/models/settlement.dart';
+import '../../../shared/utils/money.dart';
+import '../../../shared/utils/rounding_mode.dart';
 import 'settle_up_service.dart';
 
 /// Turns a [BillDetail] into a [Settlement] — each person's owed/paid amounts

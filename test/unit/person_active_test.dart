@@ -1,8 +1,8 @@
-import 'package:bill_splitter/features/bills/domain/bill_repository.dart';
-import 'package:bill_splitter/features/bills/domain/services/split_service.dart';
+import 'package:bill_splitter/core/repository/bills/bill_repository.dart';
+import 'package:bill_splitter/core/services/bills/split_service.dart';
 import 'package:bill_splitter/features/bills/presentation/bill_editor_view_model.dart';
 import 'package:bill_splitter/features/bills/presentation/create_bill_view_model.dart';
-import 'package:bill_splitter/features/people/domain/person_repository.dart';
+import 'package:bill_splitter/core/repository/people/person_repository.dart';
 import 'package:bill_splitter/shared/models/bill.dart';
 import 'package:bill_splitter/shared/models/bill_detail.dart';
 import 'package:bill_splitter/shared/models/bill_participant.dart';
@@ -56,6 +56,9 @@ class _FakeBillRepository implements BillRepository {
 
   @override
   Future<List<Bill>> getBills() async => const [];
+
+  @override
+  Future<List<Bill>> getBillsForPerson(int personId) async => const [];
 
   @override
   Future<int> save(BillDetail detail) async => 1;

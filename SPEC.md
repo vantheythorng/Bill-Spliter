@@ -139,7 +139,12 @@ regardless of who bought what.
 
 ## 4. Architecture
 
-Layered, feature-first, MVVM-flavored architecture:
+Layered, MVVM-flavored architecture. The non-UI layers are centralized under `core/`, each in
+its own folder grouped by feature — `core/dao/<feature>` (SQLite DAOs), `core/repository/<feature>`
+(repository interface **and** its implementation together), and `core/services/<feature>` (pure
+calculation services). Shared value types live with their kind — enums in `shared/utils`,
+constant reference data in `core/constants`. The **presentation** layer stays feature-first
+under `features/<feature>/presentation`:
 
 ```
 UI (Widgets/Screens)
@@ -151,15 +156,18 @@ UI (Widgets/Screens)
 
 - **Presentation layer:** `Screen` widgets + `ChangeNotifier` view models exposed through
   `ChangeNotifierProvider`. Widgets are dumb; logic lives in view models.
-- **Domain/service layer:** repositories (abstract interfaces) and pure calculation
-  services (split & settle-up logic) — fully unit-testable, no Flutter dependencies.
-- **Data layer:** `sqflite` database, DAOs, and a `SharedPreferences` wrapper.
+- **Repository layer:** each repository's abstract interface and its implementation live
+  together in `core/repository/<feature>`; the impl delegates to a DAO.
+- **Services layer:** pure calculation services (split & settle-up logic) in
+  `core/services/` — fully unit-testable, no Flutter dependencies.
+- **Data layer:** `sqflite` database + `BaseDao`, DAOs in `core/dao/<feature>`, and a
+  `SharedPreferences` wrapper.
 - **DI:** `get_it` registers repositories, services, and the database as singletons at
   startup; view models receive their dependencies via constructor injection.
 
 ---
 
-## 5. Folder Structure (feature-first)
+## 5. Folder Structure (layered core + feature-first UI)
 
 ```
 lib/
@@ -168,30 +176,33 @@ lib/
 │
 ├── core/
 │   ├── di/                       # get_it service locator setup
-│   ├── database/                 # sqflite init, migrations, schema
+│   ├── database/                 # sqflite init, schema, BaseDao
+│   ├── dao/                      # SQLite DAOs, grouped by feature
+│   │   ├── people/               #   person_dao
+│   │   └── bills/                #   bill_dao
+│   ├── repository/               # repo interface + impl together, by feature
+│   │   ├── people/               #   person_repository (+ _impl)
+│   │   └── bills/                #   bill_repository (+ _impl)
+│   ├── services/                 # pure calculation services
+│   │   └── bills/                #   split + settle-up services
 │   ├── theme/                    # light & dark ThemeData, colors, text styles
 │   ├── routing/                  # route names & generator
 │   ├── localization/             # AppLocalizations, ARB files (l10n)
-│   └── constants/                # app-wide constants
+│   └── constants/                # app constants + supported_currencies (const data)
 │
 ├── shared/
-│   ├── widgets/                  # reusable widgets (buttons, cards, avatars,
-│   │                             #   amount text, empty states, dialogs,
-│   │                             #   participant picker w/ inline quick-add)
-│   ├── utils/                    # formatters (currency, date), validators,
-│   │                             #   settle-up algorithm helpers, extensions
+│   ├── widgets/                  # reusable widgets (avatars, amount/muted text,
+│   │                             #   app text field, person-amount tile, empty
+│   │                             #   states, dialogs, participant picker)
+│   ├── utils/                    # money, currency/date formatters, validators,
+│   │                             #   rounding_mode + app_language enums
 │   └── models/                   # shared models used across features
 │
-└── features/
-    ├── onboarding/
-    │   ├── data/ | domain/ | presentation/
-    ├── people/                   # manage reusable people
-    │   ├── data/ | domain/ | presentation/
-    ├── bills/                    # create/list/detail bills, equal + itemized
-    │   ├── data/ | domain/ | presentation/
-    │   └── domain/services/      # split + settle-up calculation services
-    └── settings/                 # theme, language, currency, people entry
-        ├── data/ | domain/ | presentation/
+└── features/                     # presentation only — UI grouped by feature
+    ├── onboarding/presentation/
+    ├── people/presentation/      # people list, person profile (bill history)
+    ├── bills/presentation/       # create/list/detail bills, equal/itemized/party
+    └── settings/presentation/    # theme, language, currency, people entry
 
 test/
 ├── unit/                         # services, view models, utils
@@ -274,8 +285,13 @@ party_contribution                 -- party mode: each thing a person paid for
 5. **Itemized editor** — item list, per-item people assignment, shared charges.
 6. **Party editor** — add contributions (who paid, amount, optional label); live grand
    total, equal share, and per-person balance (get back / owe) preview.
-7. **Bill Detail / Result** — per-person breakdown + settle-up ("who pays whom").
-8. **People** — manage the reusable person list.
+7. **Bill Detail / Result** — per-person breakdown + settle-up ("who pays whom"). Opened
+   editable from the bills list (edit/delete actions), or **read-only** from a person profile
+   (§8, actions hidden).
+8. **People** — manage the reusable person list. Tapping a person opens their **profile**.
+   - **Person profile** — the person's identity plus their **bill history**: every bill they
+     appear in (participant, item, or contribution), most-recent first. Tapping a bill opens
+     it in the read-only Bill Detail (screen 7).
 9. **Settings** — theme, language, currency, people, about.
 
 ---
@@ -330,7 +346,7 @@ Dev/test: `flutter_test`, `mocktail` for repository/service mocking.
 - **Unit tests:** split calculation service, settle-up algorithm, currency/rounding
   utils, view models — the highest-value, framework-independent logic.
 - **Widget tests:** reusable widgets and each screen's core interactions.
-- Target: full coverage of `domain/services` and `shared/utils`.
+- Target: full coverage of `core/services` and `shared/utils`.
 
 ---
 

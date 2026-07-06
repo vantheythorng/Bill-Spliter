@@ -1,6 +1,6 @@
 import '../../../shared/models/person.dart';
-import '../domain/person_repository.dart';
-import 'person_dao.dart';
+import '../../dao/people/person_dao.dart';
+import 'person_repository.dart';
 
 class PersonRepositoryImpl implements PersonRepository {
   PersonRepositoryImpl(this._dao);

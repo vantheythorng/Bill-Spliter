@@ -1,5 +1,5 @@
-import '../../../../shared/models/settlement.dart';
-import '../../../../shared/utils/money.dart';
+import '../../../shared/models/settlement.dart';
+import '../../../shared/utils/money.dart';
 
 /// Greedy minimum-transactions settle-up. Given each person's balance
 /// (positive = owed money back, negative = owes), it repeatedly matches the

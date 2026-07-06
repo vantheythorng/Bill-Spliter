@@ -4,14 +4,14 @@ import 'package:provider/provider.dart';
 import '../../../core/di/service_locator.dart';
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../shared/utils/validators.dart';
-import '../../../shared/widgets/amount_text.dart';
-import '../../../shared/widgets/person_avatar.dart';
-import '../../../shared/widgets/section_header.dart';
+import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/participant_picker.dart';
-import '../../people/domain/person_repository.dart';
+import '../../../shared/widgets/person_amount_tile.dart';
+import '../../../shared/widgets/section_header.dart';
+import '../../../core/repository/people/person_repository.dart';
 import '../../settings/presentation/settings_provider.dart';
-import '../domain/bill_repository.dart';
-import '../domain/services/split_service.dart';
+import '../../../core/repository/bills/bill_repository.dart';
+import '../../../core/services/bills/split_service.dart';
 import 'bill_editor_view_model.dart';
 import 'editor_navigation.dart';
 import 'widgets/rounding_summary.dart';
@@ -62,20 +62,18 @@ class _EqualEditorView extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                TextFormField(
+                AppTextField(
+                  label: l10n.billTitleLabel,
                   initialValue: detail.bill.title,
                   textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(labelText: l10n.billTitleLabel),
                   onChanged: viewModel.setTitle,
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                AppTextField.amount(
+                  label: l10n.totalAmountLabel,
                   initialValue: detail.bill.totalAmount > 0
                       ? detail.bill.totalAmount.toString()
                       : '',
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(labelText: l10n.totalAmountLabel),
                   onChanged: (value) => viewModel
                       .setTotal(NumberParsing.tryParseAmount(value) ?? 0),
                 ),
@@ -90,22 +88,12 @@ class _EqualEditorView extends StatelessWidget {
                 const SizedBox(height: 16),
                 SectionHeader(title: l10n.perPersonShare),
                 for (final share in viewModel.preview.shares)
-                  Builder(builder: (context) {
-                    final person = viewModel.personById(share.personId);
-                    return Card(
-                      child: ListTile(
-                        leading: person == null
-                            ? const CircleAvatar(child: Icon(Icons.person))
-                            : PersonAvatar(person: person),
-                        title: Text(person?.name ?? '—'),
-                        trailing: AmountText(
-                          share.owed,
-                          currencyCode: detail.bill.currencyCode,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-                    );
-                  }),
+                  PersonAmountTile(
+                    person: viewModel.personById(share.personId),
+                    amount: share.owed,
+                    currencyCode: detail.bill.currencyCode,
+                    amountStyle: Theme.of(context).textTheme.titleMedium,
+                  ),
                 if (viewModel.preview.shares.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),

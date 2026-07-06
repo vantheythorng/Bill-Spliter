@@ -8,9 +8,9 @@ import '../../../shared/models/party_contribution.dart';
 import '../../../shared/models/person.dart';
 import '../../../shared/models/settlement.dart';
 import '../../../shared/utils/rounding_mode.dart';
-import '../../people/domain/person_repository.dart';
-import '../domain/bill_repository.dart';
-import '../domain/services/split_service.dart';
+import '../../../core/repository/people/person_repository.dart';
+import '../../../core/repository/bills/bill_repository.dart';
+import '../../../core/services/bills/split_service.dart';
 
 /// Editor for an existing bill draft. Loads the [BillDetail], applies
 /// type-specific edits, exposes a live [Settlement] preview, and persists on

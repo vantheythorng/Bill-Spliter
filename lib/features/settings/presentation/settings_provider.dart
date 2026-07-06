@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/preferences/app_preferences.dart';
 import '../../../shared/utils/rounding_mode.dart';
-import '../domain/app_language.dart';
+import '../../../shared/utils/app_language.dart';
 
 /// App-wide reactive settings: theme mode, language and split rounding. Changes
 /// are persisted to [AppPreferences] and broadcast to listeners immediately, so

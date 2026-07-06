@@ -584,6 +584,12 @@ abstract class AppLocalizations {
   /// **'Inactive'**
   String get inactive;
 
+  /// No description provided for @personNoBills.
+  ///
+  /// In en, this message translates to:
+  /// **'This person isn\'t in any bill yet.'**
+  String get personNoBills;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:

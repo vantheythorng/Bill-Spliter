@@ -7,7 +7,7 @@ import '../../../core/routing/app_route_observer.dart';
 import '../../../core/routing/route_names.dart';
 import '../../../shared/widgets/amount_text.dart';
 import '../../../shared/widgets/empty_state.dart';
-import '../domain/bill_repository.dart';
+import '../../../core/repository/bills/bill_repository.dart';
 import 'bills_list_view_model.dart';
 import 'widgets/bill_type_visuals.dart';
 

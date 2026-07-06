@@ -4,6 +4,7 @@ import '../../../../core/localization/generated/app_localizations.dart';
 import '../../../../shared/models/bill_item.dart';
 import '../../../../shared/models/person.dart';
 import '../../../../shared/utils/validators.dart';
+import '../../../../shared/widgets/app_text_field.dart';
 
 /// Dialog to add or edit a line item and choose who shares it. Returns the
 /// resulting [BillItem] (with assignments), or null if cancelled.
@@ -79,11 +80,11 @@ class _ItemFormDialogState extends State<ItemFormDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
+              AppTextField(
                 controller: _name,
                 autofocus: true,
+                label: l10n.itemNameLabel,
                 textCapitalization: TextCapitalization.sentences,
-                decoration: InputDecoration(labelText: l10n.itemNameLabel),
                 validator: (v) => Validators.required(v, l10n),
               ),
               const SizedBox(height: 8),
@@ -91,22 +92,18 @@ class _ItemFormDialogState extends State<ItemFormDialog> {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: TextFormField(
+                    child: AppTextField.amount(
                       controller: _price,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true),
-                      decoration:
-                          InputDecoration(labelText: l10n.itemPriceLabel),
+                      label: l10n.itemPriceLabel,
                       validator: (v) => Validators.positiveAmount(v, l10n),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: TextFormField(
+                    child: AppTextField(
                       controller: _quantity,
                       keyboardType: TextInputType.number,
-                      decoration:
-                          InputDecoration(labelText: l10n.itemQuantityLabel),
+                      label: l10n.itemQuantityLabel,
                     ),
                   ),
                 ],

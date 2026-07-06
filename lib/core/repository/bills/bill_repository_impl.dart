@@ -1,7 +1,7 @@
 import '../../../shared/models/bill.dart';
 import '../../../shared/models/bill_detail.dart';
-import '../domain/bill_repository.dart';
-import 'bill_dao.dart';
+import '../../dao/bills/bill_dao.dart';
+import 'bill_repository.dart';
 
 class BillRepositoryImpl implements BillRepository {
   BillRepositoryImpl(this._dao);
@@ -10,6 +10,10 @@ class BillRepositoryImpl implements BillRepository {
 
   @override
   Future<List<Bill>> getBills() => _dao.getBills();
+
+  @override
+  Future<List<Bill>> getBillsForPerson(int personId) =>
+      _dao.getBillsForPerson(personId);
 
   @override
   Future<BillDetail?> getBillDetail(int billId) => _dao.getDetail(billId);

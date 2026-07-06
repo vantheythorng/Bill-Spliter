@@ -4,6 +4,7 @@ import '../../../../core/localization/generated/app_localizations.dart';
 import '../../../../shared/models/party_contribution.dart';
 import '../../../../shared/models/person.dart';
 import '../../../../shared/utils/validators.dart';
+import '../../../../shared/widgets/app_text_field.dart';
 
 /// Dialog to add a party contribution: who paid, how much, and an optional
 /// label. Returns the [PartyContribution] or null if cancelled.
@@ -70,21 +71,17 @@ class _ContributionFormDialogState extends State<ContributionFormDialog> {
               onChanged: (value) => setState(() => _payerId = value),
             ),
             const SizedBox(height: 8),
-            TextFormField(
+            AppTextField.amount(
               controller: _amount,
               autofocus: true,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration:
-                  InputDecoration(labelText: l10n.contributionAmountLabel),
+              label: l10n.contributionAmountLabel,
               validator: (v) => Validators.positiveAmount(v, l10n),
             ),
             const SizedBox(height: 8),
-            TextFormField(
+            AppTextField(
               controller: _label,
+              label: l10n.contributionLabelHint,
               textCapitalization: TextCapitalization.sentences,
-              decoration:
-                  InputDecoration(labelText: l10n.contributionLabelHint),
             ),
           ],
         ),

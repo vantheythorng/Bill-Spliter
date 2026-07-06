@@ -5,29 +5,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('PersonAvatar shows the person initials', (tester) async {
+  testWidgets('PersonAvatar shows first initial + id', (tester) async {
     await tester.pumpWidget(const MaterialApp(
       home: Scaffold(
         body: PersonAvatar(
-          person: Person(name: 'Ada Lovelace', colorSeed: 3),
+          person: Person(id: 3, name: 'Ada Lovelace', colorSeed: 3),
         ),
       ),
     ));
 
-    expect(find.text('AL'), findsOneWidget);
+    expect(find.text('A3'), findsOneWidget);
   });
 
-  group('AvatarColor.initials', () {
-    test('single name uses one letter', () {
-      expect(AvatarColor.initials('Bob'), 'B');
+  group('AvatarColor.label', () {
+    test('first letter + id keeps same-initial people distinct', () {
+      expect(AvatarColor.label('Bob', 7), 'B7');
+      expect(AvatarColor.label('Ada Lovelace', 3), 'A3');
     });
 
-    test('multiple names use first and last initials', () {
-      expect(AvatarColor.initials('Grace Brewster Hopper'), 'GH');
+    test('null id (unsaved person) is just the letter', () {
+      expect(AvatarColor.label('Bob', null), 'B');
     });
 
     test('blank name falls back to a placeholder', () {
-      expect(AvatarColor.initials('   '), '?');
+      expect(AvatarColor.label('   ', 5), '?5');
+      expect(AvatarColor.label('   ', null), '?');
     });
   });
 }

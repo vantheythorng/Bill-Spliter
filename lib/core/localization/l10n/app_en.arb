@@ -97,6 +97,7 @@
   "deactivate": "Deactivate",
   "reactivate": "Reactivate",
   "inactive": "Inactive",
+  "personNoBills": "This person isn't in any bill yet.",
 
   "settingsTitle": "Settings",
   "settingsAppearance": "Appearance",

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/localization/generated/app_localizations.dart';
+import '../../../../shared/widgets/app_text_field.dart';
 
 /// A dialog for adding or renaming a person. Returns the entered name, or null
 /// if cancelled.
@@ -45,14 +46,15 @@ class _PersonFormDialogState extends State<PersonFormDialog> {
       title: Text(isEditing ? l10n.editPerson : l10n.addPerson),
       content: Form(
         key: _formKey,
-        child: TextFormField(
+        child: AppTextField(
           controller: _controller,
           autofocus: true,
+          label: l10n.personNameLabel,
           textCapitalization: TextCapitalization.words,
-          decoration: InputDecoration(labelText: l10n.personNameLabel),
-          validator: (value) =>
-              (value == null || value.trim().isEmpty) ? l10n.validationRequired : null,
-          onFieldSubmitted: (_) => _submit(),
+          validator: (value) => (value == null || value.trim().isEmpty)
+              ? l10n.validationRequired
+              : null,
+          onSubmitted: (_) => _submit(),
         ),
       ),
       actions: [

@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import '../../../shared/models/bill_detail.dart';
 import '../../../shared/models/settlement.dart';
 import '../../../shared/utils/rounding_mode.dart';
-import '../domain/bill_repository.dart';
-import '../domain/services/split_service.dart';
+import '../../../core/repository/bills/bill_repository.dart';
+import '../../../core/services/bills/split_service.dart';
 
 /// View model for the read-only bill summary: loads the aggregate and computes
 /// the settlement for display.

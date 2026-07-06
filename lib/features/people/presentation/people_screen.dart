@@ -3,11 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../../../core/di/service_locator.dart';
 import '../../../core/localization/generated/app_localizations.dart';
+import '../../../core/routing/route_names.dart';
 import '../../../shared/models/person.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/person_avatar.dart';
-import '../domain/person_repository.dart';
+import '../../../core/repository/people/person_repository.dart';
 import 'people_view_model.dart';
 import 'widgets/person_form_dialog.dart';
 
@@ -90,6 +91,10 @@ class _PeopleView extends StatelessWidget {
                     return Opacity(
                       opacity: person.active ? 1 : 0.5,
                       child: ListTile(
+                        onTap: () => Navigator.of(context).pushNamed(
+                          RouteNames.personProfile,
+                          arguments: person,
+                        ),
                         leading: PersonAvatar(person: person),
                         title: Text(person.name),
                         subtitle: person.active ? null : Text(l10n.inactive),

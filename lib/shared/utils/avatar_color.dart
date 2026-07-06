@@ -15,15 +15,14 @@ class AvatarColor {
     return HSLColor.fromAHSL(1, hue, saturation, lightness).toColor();
   }
 
-  /// Two initials derived from a name, for the avatar label.
-  static String initials(String name) {
-    final parts =
-        name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
-    if (parts.isEmpty) return '?';
-    if (parts.length == 1) {
-      return parts.first.characters.first.toUpperCase();
-    }
-    return (parts.first.characters.first + parts.last.characters.first)
-        .toUpperCase();
+  /// The avatar label: the first letter of the name (uppercased, or `?` when
+  /// blank) with the person's [id] appended so people who share an initial —
+  /// e.g. two "A" names — stay visually distinct. A null [id] (an unsaved
+  /// person) yields just the letter.
+  static String label(String name, int? id) {
+    final trimmed = name.trim();
+    final letter =
+        trimmed.isEmpty ? '?' : trimmed.characters.first.toUpperCase();
+    return id == null ? letter : '$letter$id';
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/localization/generated/app_localizations.dart';
 import '../models/person.dart';
+import 'app_text_field.dart';
 import 'person_avatar.dart';
 
 /// A reusable participant selector: lists every saved [Person] as a toggleable
@@ -67,16 +68,14 @@ class _ParticipantPickerState extends State<ParticipantPicker> {
             ],
           ),
         const SizedBox(height: 12),
-        TextField(
+        AppTextField(
           controller: _controller,
+          hint: l10n.addParticipantHint,
           textInputAction: TextInputAction.done,
-          decoration: InputDecoration(
-            hintText: l10n.addParticipantHint,
-            prefixIcon: const Icon(Icons.person_add_alt),
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: _submitQuickAdd,
-            ),
+          prefixIcon: const Icon(Icons.person_add_alt),
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: _submitQuickAdd,
           ),
           onSubmitted: (_) => _submitQuickAdd(),
         ),

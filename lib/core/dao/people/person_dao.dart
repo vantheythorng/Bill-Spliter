@@ -1,32 +1,28 @@
 import 'package:sqflite/sqflite.dart';
 
-import '../../../core/database/app_database.dart';
-import '../../../core/database/database_schema.dart';
+import '../../database/base_dao.dart';
+import '../../database/database_schema.dart';
 import '../../../shared/models/person.dart';
 
 /// Data-access object for the `person` table and the queries needed to enforce
 /// the soft-delete guard (checking whether a person is referenced elsewhere).
-class PersonDao {
-  PersonDao(this._appDatabase);
-
-  final AppDatabase _appDatabase;
-
-  Future<Database> get _db => _appDatabase.database;
+class PersonDao extends BaseDao {
+  const PersonDao(super.appDatabase);
 
   Future<List<Person>> getAll() async {
-    final db = await _db;
+    final db = await this.db;
     final rows = await db.query(Db.tablePerson, orderBy: '${Db.personName} COLLATE NOCASE ASC');
     return rows.map(Person.fromMap).toList();
   }
 
   Future<Person> insert(Person person) async {
-    final db = await _db;
+    final db = await this.db;
     final id = await db.insert(Db.tablePerson, person.toMap());
     return person.copyWith(id: id);
   }
 
   Future<void> update(Person person) async {
-    final db = await _db;
+    final db = await this.db;
     await db.update(
       Db.tablePerson,
       person.toMap(),
@@ -36,7 +32,7 @@ class PersonDao {
   }
 
   Future<void> delete(int id) async {
-    final db = await _db;
+    final db = await this.db;
     await db.delete(
       Db.tablePerson,
       where: '${Db.personId} = ?',
@@ -47,7 +43,7 @@ class PersonDao {
   /// Sets the person's active flag. Deactivated people are hidden from the
   /// participant picker but keep all of their existing bill history.
   Future<void> setActive(int id, bool active) async {
-    final db = await _db;
+    final db = await this.db;
     await db.update(
       Db.tablePerson,
       {Db.personActive: active ? 1 : 0},
@@ -60,7 +56,7 @@ class PersonDao {
   /// assignment, or contribution), fetched in a single query. Such people
   /// cannot be deleted — only deactivated.
   Future<Set<int>> referencedIds() async {
-    final db = await _db;
+    final db = await this.db;
     final rows = await db.rawQuery('''
       SELECT ${Db.participantPersonId} AS id FROM ${Db.tableBillParticipant}
       UNION SELECT ${Db.assignmentPersonId} FROM ${Db.tableItemAssignment}
@@ -72,7 +68,7 @@ class PersonDao {
   /// Whether the person is referenced by any bill (participant, item
   /// assignment, or contribution) and so must be kept for historical integrity.
   Future<bool> isReferenced(int id) async {
-    final db = await _db;
+    final db = await this.db;
     Future<int> count(String table, String column) async {
       final result = await db.rawQuery(
         'SELECT COUNT(*) AS c FROM $table WHERE $column = ?',

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../shared/models/person.dart';
-import '../domain/person_repository.dart';
+import '../../../core/repository/people/person_repository.dart';
 
 /// View model for the People screen — loads and mutates the reusable person
 /// list. Injected with a [PersonRepository].

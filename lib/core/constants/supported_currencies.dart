@@ -8,15 +8,7 @@ class SupportedCurrency {
 
 const List<SupportedCurrency> kSupportedCurrencies = [
   SupportedCurrency('USD', 'US Dollar'),
-  SupportedCurrency('EUR', 'Euro'),
-  SupportedCurrency('GBP', 'British Pound'),
-  SupportedCurrency('JPY', 'Japanese Yen'),
-  SupportedCurrency('THB', 'Thai Baht'),
-  SupportedCurrency('KHR', 'Cambodian ៛'),
-  SupportedCurrency('SGD', 'Singapore Dollar'),
-  SupportedCurrency('AUD', 'Australian Dollar'),
-  SupportedCurrency('CAD', 'Canadian Dollar'),
-  SupportedCurrency('INR', 'Indian Rupee'),
+  SupportedCurrency('KHR', 'Khmer Riel'),
   SupportedCurrency('CNY', 'Chinese Yuan'),
 ];
 

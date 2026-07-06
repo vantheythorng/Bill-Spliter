@@ -12,6 +12,14 @@ abstract class PersonRepository {
 
   Future<void> delete(int id);
 
+  /// Hides ([active] = false) or restores the person in the participant picker
+  /// without touching their existing bill history.
+  Future<void> setActive(int id, bool active);
+
   /// Whether the person appears in any existing bill.
   Future<bool> isReferenced(int id);
+
+  /// The ids of every person referenced by an existing bill. Referenced people
+  /// cannot be deleted — only deactivated.
+  Future<Set<int>> referencedIds();
 }

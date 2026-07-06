@@ -44,6 +44,31 @@ class PersonDao {
     );
   }
 
+  /// Sets the person's active flag. Deactivated people are hidden from the
+  /// participant picker but keep all of their existing bill history.
+  Future<void> setActive(int id, bool active) async {
+    final db = await _db;
+    await db.update(
+      Db.tablePerson,
+      {Db.personActive: active ? 1 : 0},
+      where: '${Db.personId} = ?',
+      whereArgs: [id],
+    );
+  }
+
+  /// The ids of every person referenced by any bill (participant, item
+  /// assignment, or contribution), fetched in a single query. Such people
+  /// cannot be deleted — only deactivated.
+  Future<Set<int>> referencedIds() async {
+    final db = await _db;
+    final rows = await db.rawQuery('''
+      SELECT ${Db.participantPersonId} AS id FROM ${Db.tableBillParticipant}
+      UNION SELECT ${Db.assignmentPersonId} FROM ${Db.tableItemAssignment}
+      UNION SELECT ${Db.contributionPersonId} FROM ${Db.tableContribution}
+    ''');
+    return rows.map((r) => r['id'] as int).toSet();
+  }
+
   /// Whether the person is referenced by any bill (participant, item
   /// assignment, or contribution) and so must be kept for historical integrity.
   Future<bool> isReferenced(int id) async {

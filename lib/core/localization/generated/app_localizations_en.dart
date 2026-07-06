@@ -258,7 +258,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deletePersonBody =>
-      'This person is used in existing bills, which will keep their history.';
+      'This person isn\'t used in any bill and will be permanently removed.';
+
+  @override
+  String get deactivate => 'Deactivate';
+
+  @override
+  String get reactivate => 'Reactivate';
+
+  @override
+  String get inactive => 'Inactive';
 
   @override
   String get settingsTitle => 'Settings';

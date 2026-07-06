@@ -11,6 +11,7 @@ class PeopleViewModel extends ChangeNotifier {
   final PersonRepository _repository;
 
   List<Person> _people = [];
+  Set<int> _referencedIds = {};
   bool _loading = false;
 
   List<Person> get people => List.unmodifiable(_people);
@@ -21,6 +22,7 @@ class PeopleViewModel extends ChangeNotifier {
     _loading = true;
     notifyListeners();
     _people = await _repository.getAll();
+    _referencedIds = await _repository.referencedIds();
     _loading = false;
     notifyListeners();
   }
@@ -36,16 +38,23 @@ class PeopleViewModel extends ChangeNotifier {
     await load();
   }
 
-  /// Returns true if the person is referenced by existing bills and so should
-  /// prompt a confirm-before-delete.
-  Future<bool> isReferenced(Person person) {
-    if (person.id == null) return Future.value(false);
-    return _repository.isReferenced(person.id!);
-  }
+  /// Whether the person is referenced by existing bills. Referenced people
+  /// cannot be deleted — only deactivated to hide them from new bills.
+  bool isReferenced(Person person) =>
+      person.id != null && _referencedIds.contains(person.id);
 
+  /// Deletes a person entirely. Only valid for people with no bill history;
+  /// the UI blocks deletion of referenced people.
   Future<void> deletePerson(Person person) async {
     if (person.id == null) return;
     await _repository.delete(person.id!);
+    await load();
+  }
+
+  /// Hides or restores the person in the participant picker.
+  Future<void> setActive(Person person, bool active) async {
+    if (person.id == null) return;
+    await _repository.setActive(person.id!, active);
     await load();
   }
 }

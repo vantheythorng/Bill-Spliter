@@ -563,8 +563,26 @@ abstract class AppLocalizations {
   /// No description provided for @deletePersonBody.
   ///
   /// In en, this message translates to:
-  /// **'This person is used in existing bills, which will keep their history.'**
+  /// **'This person isn\'t used in any bill and will be permanently removed.'**
   String get deletePersonBody;
+
+  /// No description provided for @deactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivate;
+
+  /// No description provided for @reactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactivate'**
+  String get reactivate;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactive;
 
   /// No description provided for @settingsTitle.
   ///

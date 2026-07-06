@@ -48,7 +48,8 @@ These were clarified with the user and are binding for implementation:
    **Inline quick-add:** people can be created directly from the bill's participant
    picker (type a name → add) without visiting the People screen first. A quick-added
    person is saved to the reusable list automatically, so pre-creation is optional, never
-   required. The People screen remains for managing/editing/deleting saved people.
+   required. The People screen remains for managing/editing saved people, and for
+   deactivating (or reactivating) them — see §5 for the delete-vs-deactivate rule.
 3. **Localization — English and Khmer.** Both ship at launch; the i18n infrastructure
    (ARB files, `flutter_localizations`, generated `AppLocalizations`) makes adding more
    languages a matter of a new ARB. Khmer glyphs render with the bundled **Kantumruy Pro**
@@ -110,7 +111,8 @@ regardless of who bought what.
 - **Theme:** System / Light / Dark.
 - **Language:** English and Khmer (ខ្មែរ); ARB scaffold ready for more.
 - **Split rounding:** Round up (default) / Round down / Exact (see §3.6).
-- **Manage people:** add / edit / delete saved people.
+- **Manage people:** add / edit saved people; delete those with no bill history, or
+  deactivate / reactivate those that do (§5).
 - App version / about.
 
 > Currency is **not** a setting — it is chosen per bill in the create flow (§3.7).
@@ -206,6 +208,7 @@ person
   name          TEXT NOT NULL
   color_seed    INTEGER            -- for avatar color
   created_at    INTEGER
+  active        INTEGER DEFAULT 1  -- 0 = deactivated: hidden from the participant picker
 
 bill
   id            INTEGER PK
@@ -246,8 +249,12 @@ party_contribution                 -- party mode: each thing a person paid for
 > For party bills, `bill_participant.paid_amount` is the cached SUM of that person's
 > `party_contribution.amount` rows (kept for fast balance math).
 
-- Deleting a person is soft-guarded: if referenced by past bills, the person is kept
-  for historical integrity (confirm-before-delete flow, or mark inactive).
+- Deleting a person is guarded by their bill history:
+  - **No records** → the person can be deleted outright (confirm-before-delete).
+  - **Referenced by any bill** (participant, item assignment, or contribution) → delete is
+    blocked; instead the person is **deactivated** (`active = 0`), which hides them from the
+    participant picker while preserving all history. Deactivation is reversible (reactivate).
+    An already-selected but since-deactivated participant stays visible on that existing bill.
 - Non-relational preferences (theme, language, split-rounding mode, onboarding flag) live
   in **SharedPreferences**, not SQLite. Currency is per bill and lives on the `bill` row.
 

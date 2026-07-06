@@ -29,5 +29,11 @@ class PersonRepositoryImpl implements PersonRepository {
   Future<void> delete(int id) => _dao.delete(id);
 
   @override
+  Future<void> setActive(int id, bool active) => _dao.setActive(id, active);
+
+  @override
   Future<bool> isReferenced(int id) => _dao.isReferenced(id);
+
+  @override
+  Future<Set<int>> referencedIds() => _dao.referencedIds();
 }

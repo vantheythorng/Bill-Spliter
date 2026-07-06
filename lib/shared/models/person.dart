@@ -7,6 +7,7 @@ class Person {
     required this.name,
     required this.colorSeed,
     this.createdAt,
+    this.active = true,
   });
 
   final int? id;
@@ -16,12 +17,24 @@ class Person {
   final int colorSeed;
   final DateTime? createdAt;
 
-  Person copyWith({int? id, String? name, int? colorSeed, DateTime? createdAt}) {
+  /// Whether this person appears in the participant picker when creating a
+  /// bill. Deactivated people are hidden from selection but kept for the
+  /// history of any bill they already belong to.
+  final bool active;
+
+  Person copyWith({
+    int? id,
+    String? name,
+    int? colorSeed,
+    DateTime? createdAt,
+    bool? active,
+  }) {
     return Person(
       id: id ?? this.id,
       name: name ?? this.name,
       colorSeed: colorSeed ?? this.colorSeed,
       createdAt: createdAt ?? this.createdAt,
+      active: active ?? this.active,
     );
   }
 
@@ -32,6 +45,7 @@ class Person {
       Db.personColorSeed: colorSeed,
       Db.personCreatedAt:
           (createdAt ?? DateTime.now()).millisecondsSinceEpoch,
+      Db.personActive: active ? 1 : 0,
     };
   }
 
@@ -43,6 +57,7 @@ class Person {
       createdAt: DateTime.fromMillisecondsSinceEpoch(
         (map[Db.personCreatedAt] as int?) ?? 0,
       ),
+      active: ((map[Db.personActive] as int?) ?? 1) == 1,
     );
   }
 

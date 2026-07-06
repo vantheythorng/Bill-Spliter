@@ -45,20 +45,19 @@ class _PeopleView extends StatelessWidget {
   Future<void> _deletePerson(BuildContext context, Person person) async {
     final l10n = AppLocalizations.of(context);
     final viewModel = context.read<PeopleViewModel>();
-    final referenced = await viewModel.isReferenced(person);
-    if (!context.mounted) return;
-
-    if (referenced) {
-      final confirmed = await ConfirmDialog.show(
-        context,
-        title: l10n.deletePersonTitle(person.name),
-        message: l10n.deletePersonBody,
-        confirmLabel: l10n.delete,
-        destructive: true,
-      );
-      if (!confirmed) return;
-    }
+    final confirmed = await ConfirmDialog.show(
+      context,
+      title: l10n.deletePersonTitle(person.name),
+      message: l10n.deletePersonBody,
+      confirmLabel: l10n.delete,
+      destructive: true,
+    );
+    if (!confirmed) return;
     await viewModel.deletePerson(person);
+  }
+
+  Future<void> _toggleActive(BuildContext context, Person person) async {
+    await context.read<PeopleViewModel>().setActive(person, !person.active);
   }
 
   @override
@@ -87,22 +86,36 @@ class _PeopleView extends StatelessWidget {
                   separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final person = viewModel.people[index];
-                    return ListTile(
-                      leading: PersonAvatar(person: person),
-                      title: Text(person.name),
-                      trailing: PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == 'edit') {
-                            _editPerson(context, person);
-                          } else if (value == 'delete') {
-                            _deletePerson(context, person);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(value: 'edit', child: Text(l10n.edit)),
-                          PopupMenuItem(
-                              value: 'delete', child: Text(l10n.delete)),
-                        ],
+                    final canDelete = !viewModel.isReferenced(person);
+                    return Opacity(
+                      opacity: person.active ? 1 : 0.5,
+                      child: ListTile(
+                        leading: PersonAvatar(person: person),
+                        title: Text(person.name),
+                        subtitle: person.active ? null : Text(l10n.inactive),
+                        trailing: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                              _editPerson(context, person);
+                            } else if (value == 'delete') {
+                              _deletePerson(context, person);
+                            } else if (value == 'toggleActive') {
+                              _toggleActive(context, person);
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            PopupMenuItem(value: 'edit', child: Text(l10n.edit)),
+                            PopupMenuItem(
+                              value: 'toggleActive',
+                              child: Text(person.active
+                                  ? l10n.deactivate
+                                  : l10n.reactivate),
+                            ),
+                            if (canDelete)
+                              PopupMenuItem(
+                                  value: 'delete', child: Text(l10n.delete)),
+                          ],
+                        ),
                       ),
                     );
                   },

@@ -41,8 +41,15 @@ class BillEditorViewModel extends ChangeNotifier {
   /// triggering a rebuild loop.
   set rounding(RoundingMode mode) => _rounding = mode;
 
-  /// Every saved person, for the participant picker.
-  List<Person> get allPeople => List.unmodifiable(_allPeople);
+  /// People shown in the participant picker: active people, plus anyone already
+  /// selected on this bill (so a since-deactivated participant of an existing
+  /// bill stays visible and can still be toggled off).
+  List<Person> get allPeople {
+    final selected = selectedPersonIds;
+    return List.unmodifiable(
+      _allPeople.where((p) => p.active || selected.contains(p.id)),
+    );
+  }
 
   /// The bill's current participants (as [Person] records).
   List<Person> get participants => _detail?.people ?? const [];

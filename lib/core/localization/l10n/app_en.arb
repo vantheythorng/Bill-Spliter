@@ -93,7 +93,10 @@
   "personNameLabel": "Name",
   "deletePersonTitle": "Delete {name}?",
   "@deletePersonTitle": { "placeholders": { "name": {} } },
-  "deletePersonBody": "This person is used in existing bills, which will keep their history.",
+  "deletePersonBody": "This person isn't used in any bill and will be permanently removed.",
+  "deactivate": "Deactivate",
+  "reactivate": "Reactivate",
+  "inactive": "Inactive",
 
   "settingsTitle": "Settings",
   "settingsAppearance": "Appearance",

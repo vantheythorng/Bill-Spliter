@@ -10,6 +10,7 @@ class Db {
   static const String personName = 'name';
   static const String personColorSeed = 'color_seed';
   static const String personCreatedAt = 'created_at';
+  static const String personActive = 'active';
 
   // bill
   static const String tableBill = 'bill';
@@ -57,7 +58,8 @@ class Db {
       $personId INTEGER PRIMARY KEY AUTOINCREMENT,
       $personName TEXT NOT NULL,
       $personColorSeed INTEGER NOT NULL,
-      $personCreatedAt INTEGER NOT NULL
+      $personCreatedAt INTEGER NOT NULL,
+      $personActive INTEGER NOT NULL DEFAULT 1
     )
     ''',
     '''

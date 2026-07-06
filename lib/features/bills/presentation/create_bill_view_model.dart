@@ -27,7 +27,10 @@ class CreateBillViewModel extends ChangeNotifier {
   /// The currency chosen for this bill (always set — picked in the create flow).
   String _currencyCode = kDefaultCurrencyCode;
 
-  List<Person> get people => List.unmodifiable(_people);
+  /// Active people only — deactivated people are hidden from selection when
+  /// creating a bill.
+  List<Person> get people =>
+      List.unmodifiable(_people.where((p) => p.active));
   Set<int> get selectedPersonIds => _selectedPersonIds;
   String get title => _title;
   BillType get type => _type;

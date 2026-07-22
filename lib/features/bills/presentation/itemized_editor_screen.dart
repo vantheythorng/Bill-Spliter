@@ -122,6 +122,16 @@ class _ItemizedEditorView extends StatelessWidget {
                       onDelete: () => viewModel.removeItem(i),
                     ),
                 const SizedBox(height: 16),
+                SectionHeader(title: l10n.deliveryFeeLabel),
+                AppTextField.amount(
+                  label: l10n.deliveryFeeLabel,
+                  initialValue: detail.bill.deliveryFee > 0
+                      ? detail.bill.deliveryFee.toString()
+                      : '',
+                  onChanged: (value) => viewModel
+                      .setDeliveryFee(NumberParsing.tryParseAmount(value) ?? 0),
+                ),
+                const SizedBox(height: 16),
                 SectionHeader(title: l10n.paymentsLabel),
                 for (final person in viewModel.participants)
                   _PaidField(
@@ -168,16 +178,36 @@ class _ItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
     final qtyPrefix = item.quantity > 1 ? '${item.quantity}× ' : '';
+    final hasFee = item.packagingFee > 0;
     return Card(
       child: ListTile(
         title: Text('$qtyPrefix${item.name}'),
-        subtitle: subtitle.isEmpty ? null : Text(subtitle),
+        subtitle: subtitle.isEmpty && !hasFee
+            ? null
+            : Row(
+                children: [
+                  if (subtitle.isNotEmpty)
+                    Flexible(
+                      child: Text(subtitle, overflow: TextOverflow.ellipsis),
+                    ),
+                  if (hasFee) ...[
+                    if (subtitle.isNotEmpty) const SizedBox(width: 8),
+                    Text('${l10n.packagingFeeLabel} ',
+                        style: theme.textTheme.bodySmall),
+                    AmountText(item.packagingFee,
+                        currencyCode: currencyCode,
+                        style: theme.textTheme.bodySmall),
+                  ],
+                ],
+              ),
         onTap: onEdit,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AmountText(item.lineTotal, currencyCode: currencyCode),
+            AmountText(item.lineTotalWithFee, currencyCode: currencyCode),
             IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: onDelete,

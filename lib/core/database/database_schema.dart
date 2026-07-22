@@ -18,6 +18,7 @@ class Db {
   static const String billTitle = 'title';
   static const String billType = 'type';
   static const String billTotalAmount = 'total_amount';
+  static const String billDeliveryFee = 'delivery_fee';
   static const String billCurrencyCode = 'currency_code';
   static const String billCreatedAt = 'created_at';
   static const String billUpdatedAt = 'updated_at';
@@ -36,6 +37,7 @@ class Db {
   static const String itemName = 'name';
   static const String itemPrice = 'price';
   static const String itemQuantity = 'quantity';
+  static const String itemPackagingFee = 'packaging_fee';
 
   // bill_item_assignment
   static const String tableItemAssignment = 'bill_item_assignment';
@@ -68,6 +70,7 @@ class Db {
       $billTitle TEXT NOT NULL,
       $billType TEXT NOT NULL,
       $billTotalAmount REAL NOT NULL DEFAULT 0,
+      $billDeliveryFee REAL NOT NULL DEFAULT 0,
       $billCurrencyCode TEXT,
       $billCreatedAt INTEGER NOT NULL,
       $billUpdatedAt INTEGER NOT NULL
@@ -90,6 +93,7 @@ class Db {
       $itemName TEXT NOT NULL,
       $itemPrice REAL NOT NULL,
       $itemQuantity INTEGER NOT NULL DEFAULT 1,
+      $itemPackagingFee REAL NOT NULL DEFAULT 0,
       FOREIGN KEY ($itemBillId) REFERENCES $tableBill ($billId) ON DELETE CASCADE
     )
     ''',

@@ -19,7 +19,11 @@ class ContributionFormDialog extends StatefulWidget {
   }) {
     return showDialog<PartyContribution>(
       context: context,
-      builder: (_) => ContributionFormDialog(participants: participants),
+      builder: (context) => MediaQuery.removeViewInsets(
+        context: context,
+        removeBottom: true,
+        child: ContributionFormDialog(participants: participants),
+      ),
     );
   }
 
@@ -57,33 +61,36 @@ class _ContributionFormDialogState extends State<ContributionFormDialog> {
       title: Text(l10n.addContribution),
       content: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownButtonFormField<int>(
-              initialValue: _payerId,
-              decoration:
-                  InputDecoration(labelText: l10n.contributionPayerLabel),
-              items: [
-                for (final person in widget.participants)
-                  DropdownMenuItem(value: person.id, child: Text(person.name)),
-              ],
-              onChanged: (value) => setState(() => _payerId = value),
-            ),
-            const SizedBox(height: 8),
-            AppTextField.amount(
-              controller: _amount,
-              autofocus: true,
-              label: l10n.contributionAmountLabel,
-              validator: (v) => Validators.positiveAmount(v, l10n),
-            ),
-            const SizedBox(height: 8),
-            AppTextField(
-              controller: _label,
-              label: l10n.contributionLabelHint,
-              textCapitalization: TextCapitalization.sentences,
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<int>(
+                initialValue: _payerId,
+                decoration:
+                    InputDecoration(labelText: l10n.contributionPayerLabel),
+                items: [
+                  for (final person in widget.participants)
+                    DropdownMenuItem(
+                        value: person.id, child: Text(person.name)),
+                ],
+                onChanged: (value) => setState(() => _payerId = value),
+              ),
+              const SizedBox(height: 8),
+              AppTextField.amount(
+                controller: _amount,
+                autofocus: true,
+                label: l10n.contributionAmountLabel,
+                validator: (v) => Validators.positiveAmount(v, l10n),
+              ),
+              const SizedBox(height: 8),
+              AppTextField(
+                controller: _label,
+                label: l10n.contributionLabelHint,
+                textCapitalization: TextCapitalization.sentences,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [

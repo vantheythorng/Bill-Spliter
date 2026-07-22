@@ -16,7 +16,6 @@ import '../../../core/services/bills/split_service.dart';
 import 'bill_detail_view_model.dart';
 import 'bill_editor_args.dart';
 import 'widgets/bill_type_visuals.dart';
-import 'widgets/rounding_summary.dart';
 
 /// Bill summary: per-person breakdown and settle-up transactions. Editable by
 /// default; pass [readOnly] (e.g. when opened from a person's profile) to hide
@@ -143,13 +142,22 @@ class _BillDetailView extends StatelessWidget {
                     style: theme.textTheme.titleLarge,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: RoundingSummary(
-                    delta: settlement.roundingDelta,
-                    currencyCode: currency,
+                if (bill.deliveryFee > 0)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(l10n.deliveryFeeLabel,
+                            style: theme.textTheme.bodyMedium),
+                        AmountText(
+                          bill.deliveryFee,
+                          currencyCode: currency,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),

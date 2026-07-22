@@ -362,6 +362,18 @@ abstract class AppLocalizations {
   /// **'Qty'**
   String get itemQuantityLabel;
 
+  /// No description provided for @packagingFeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Packaging fee'**
+  String get packagingFeeLabel;
+
+  /// No description provided for @deliveryFeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery fee'**
+  String get deliveryFeeLabel;
+
   /// No description provided for @assignedToLabel.
   ///
   /// In en, this message translates to:
@@ -487,24 +499,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'owes {amount}'**
   String owesAmount(Object amount);
-
-  /// No description provided for @roundingExtraLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Extra collected'**
-  String get roundingExtraLabel;
-
-  /// No description provided for @roundingShortLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Short of total'**
-  String get roundingShortLabel;
-
-  /// No description provided for @roundingExactLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Adds up exactly'**
-  String get roundingExactLabel;
 
   /// No description provided for @allSettled.
   ///
@@ -643,54 +637,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose currency'**
   String get chooseCurrency;
-
-  /// No description provided for @settingsRounding.
-  ///
-  /// In en, this message translates to:
-  /// **'Rounding'**
-  String get settingsRounding;
-
-  /// No description provided for @settingsRoundingHint.
-  ///
-  /// In en, this message translates to:
-  /// **'How to round each person\'s share when a bill doesn\'t divide evenly.'**
-  String get settingsRoundingHint;
-
-  /// No description provided for @roundingUpTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Everyone pays the same (rounded up)'**
-  String get roundingUpTitle;
-
-  /// No description provided for @roundingUpDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'100 split 3 ways → 33.34 each'**
-  String get roundingUpDetail;
-
-  /// No description provided for @roundingDownTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Everyone pays the same (rounded down)'**
-  String get roundingDownTitle;
-
-  /// No description provided for @roundingDownDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'100 split 3 ways → 33.33 each'**
-  String get roundingDownDetail;
-
-  /// No description provided for @roundingExactTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Exact total, cents may differ'**
-  String get roundingExactTitle;
-
-  /// No description provided for @roundingExactDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'100 split 3 ways → 33.34, 33.33, 33.33'**
-  String get roundingExactDetail;
 
   /// No description provided for @settingsPeople.
   ///

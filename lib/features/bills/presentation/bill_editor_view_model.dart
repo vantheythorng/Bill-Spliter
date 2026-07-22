@@ -154,6 +154,15 @@ class BillEditorViewModel extends ChangeNotifier {
 
   // --- Itemized ------------------------------------------------------------
 
+  /// The order-level delivery fee (itemized bills), split equally across all
+  /// participants in the preview and settlement.
+  void setDeliveryFee(double amount) {
+    final d = _detail;
+    if (d == null) return;
+    _detail = d.copyWith(bill: d.bill.copyWith(deliveryFee: amount));
+    notifyListeners();
+  }
+
   void addItem(BillItem item) {
     final d = _detail;
     if (d == null) return;
@@ -230,7 +239,9 @@ class BillEditorViewModel extends ChangeNotifier {
         // total is entered directly; nothing to derive.
         break;
       case BillType.itemized:
-        final total = d.items.fold<double>(0, (sum, i) => sum + i.lineTotal);
+        final itemsTotal =
+            d.items.fold<double>(0, (sum, i) => sum + i.lineTotalWithFee);
+        final total = itemsTotal + d.bill.deliveryFee;
         updated = updated.copyWith(bill: d.bill.copyWith(totalAmount: total));
         break;
       case BillType.party:

@@ -16,7 +16,6 @@ import '../../../core/services/bills/split_service.dart';
 import 'bill_editor_view_model.dart';
 import 'editor_navigation.dart';
 import 'widgets/contribution_form_dialog.dart';
-import 'widgets/rounding_summary.dart';
 
 /// Party editor: log contributions (who paid, amount, optional label) and see
 /// the grand total, equal share and each person's balance live.
@@ -172,14 +171,6 @@ class _PartyEditorView extends StatelessWidget {
               amountStyle: theme.textTheme.titleMedium,
               avatarRadius: 16,
               card: false,
-            ),
-          if (preview.shares.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: RoundingSummary(
-                delta: preview.roundingDelta,
-                currencyCode: currency,
-              ),
             ),
           const SizedBox(height: 16),
           FilledButton(

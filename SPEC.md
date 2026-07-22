@@ -22,7 +22,7 @@ among people, either equally or by itemized consumption with settle-up.
 | **Theming** | Material 3, full light & dark mode support |
 | **Localization** | English and Khmer (`km`), with `intl` + ARB; Khmer renders with the bundled **Kantumruy Pro** font |
 | **Currency** | Per-bill (chosen at creation); no app-wide currency setting |
-| **Rounding** | User-selectable split rounding (Round up default / Round down / Exact) |
+| **Rounding** | Fair split to the cent (largest-remainder): shares sum to the exact total; one participant (the payer, in settle-up) pays the indivisible cent |
 
 ### Design principles (from constraints)
 - Follow official Flutter conventions and idiomatic Dart.
@@ -59,11 +59,12 @@ These were clarified with the user and are binding for implementation:
    (a supported-currency picker, defaulting to USD). Amounts are formatted per bill, so
    different bills can use different currencies. There is **no** app-wide currency setting
    and no multi-currency conversion within a bill.
-5. **Split rounding — user-selectable.** A Settings option controls how uneven splits
-   round: **Round up** (default — everyone pays the same, rounded up), **Round down**, or
-   **Exact** (largest-remainder; shares sum exactly to the total). Result screens surface
-   whether the chosen mode collects an **Extra** amount, comes up **Short**, or **adds up
-   exactly**.
+5. **Split rounding — fixed (fair pay).** Uneven splits use **largest-remainder**:
+   each share is floored to the cent and the indivisible leftover cent is handed to a
+   single participant, so the shares always sum to **exactly** the bill total — never
+   over-collecting and never losing money. In a settle-up bill the odd cent lands on the
+   person who fronted the cash (e.g. 10 ÷ 3 → the payer bears 3.34, the others 3.33). This
+   is not user-configurable.
 
 ---
 
@@ -77,16 +78,20 @@ These were clarified with the user and are binding for implementation:
 
 ### 3.2 Equal Split
 - Create a bill, pick participants, enter a total amount.
-- App divides the total equally according to the selected **rounding mode** (§3.6):
-  Exact uses the largest-remainder method so shares always sum to the total; Round
-  up/down give every person the same rounded share.
+- App divides the total equally using largest-remainder (§3.6): shares are floored to the
+  cent and the leftover cent goes to one person, so the shares sum to exactly the total.
 
 ### 3.3 Itemized Split + Settle-Up
 - Add line items to a bill (name, price, quantity).
 - Assign each item to one or more participants; the item cost splits equally among them.
-- Optionally add shared charges (tax, tip, service) split across all or selected people.
-- App computes each person's total owed and each person's actual payments, then runs a
-  **settle-up algorithm** to produce the minimal set of "X pays Y amount" transactions.
+- **Packaging fee (per item):** an optional flat fee on a line item (charged once, not per
+  unit). It is added to that item's cost and split among the item's sharers only.
+- **Delivery fee (per order):** an optional order-level fee split **equally across all
+  participants**, regardless of what each ordered.
+- App computes each person's total owed (item shares + packaging shares + delivery share) and
+  each person's actual payments, then runs a **settle-up algorithm** to produce the minimal
+  set of "X pays Y amount" transactions. The bill's grand total is
+  `Σ(item price×qty + packaging fee) + delivery fee`.
 
 ### 3.4 Party / Shared-Pot Split
 For group events (parties, trips) where **multiple people each pay for different things
@@ -110,7 +115,6 @@ regardless of who bought what.
 ### 3.5 Settings
 - **Theme:** System / Light / Dark.
 - **Language:** English and Khmer (ខ្មែរ); ARB scaffold ready for more.
-- **Split rounding:** Round up (default) / Round down / Exact (see §3.6).
 - **Manage people:** add / edit saved people; delete those with no bill history, or
   deactivate / reactivate those that do (§5).
 - App version / about.
@@ -118,16 +122,16 @@ regardless of who bought what.
 > Currency is **not** a setting — it is chosen per bill in the create flow (§3.7).
 
 ### 3.6 Split Rounding
-- A single app-wide setting chooses how per-person shares round when a bill does not
-  divide evenly:
-  - **Round up** *(default)* — everyone pays the same amount, rounded up (collected total
-    may slightly exceed the bill).
-  - **Round down** — everyone pays the same amount, rounded down (may fall short).
-  - **Exact** — largest-remainder distribution; shares always sum to the total, cents may
-    differ by one between people.
+- When a bill does not divide evenly, per-person shares use **largest-remainder**: each
+  share is floored to the cent and the indivisible leftover cent(s) are handed to a single
+  participant. The shares therefore always sum to **exactly** the bill total — the app
+  never over-collects and never loses a cent. This is fixed app-wide and not
+  user-configurable.
 - Applies to equal, itemized and party splits alike (all reduce to distributing cents).
-- The result and editor screens show a **reconciliation indicator** — *Extra collected*,
-  *Short of total*, or *Adds up exactly* — with the difference amount.
+- Because every split reconciles exactly, there is no *extra collected* / *short* /
+  *lost* indicator: the only visible effect is that one person's share is a cent higher.
+  In a settle-up bill that person is the one who fronted the cash, so they simply "pay a
+  little more".
 
 ### 3.7 Per-Bill Currency
 - The currency is selected **when creating a bill** (a picker over a supported-currency
@@ -225,7 +229,9 @@ bill
   id            INTEGER PK
   title         TEXT NOT NULL
   type          TEXT NOT NULL      -- 'equal' | 'itemized' | 'party'
-  total_amount  REAL               -- equal: entered directly; party: derived = SUM(paid_amount)
+  total_amount  REAL               -- equal: entered directly; party: derived = SUM(paid_amount);
+                                   --   itemized: derived = Σ(line+packaging) + delivery_fee
+  delivery_fee  REAL DEFAULT 0     -- itemized: order-level fee split equally among all
   currency_code TEXT               -- per-bill currency (chosen at creation)
   created_at    INTEGER
   updated_at    INTEGER
@@ -243,6 +249,7 @@ bill_item                          -- itemized bills only
   name          TEXT NOT NULL
   price         REAL NOT NULL
   quantity      INTEGER DEFAULT 1
+  packaging_fee REAL DEFAULT 0     -- flat per-line fee, split among the item's sharers
 
 bill_item_assignment               -- which people share an item (itemized only)
   id            INTEGER PK
@@ -266,8 +273,8 @@ party_contribution                 -- party mode: each thing a person paid for
     blocked; instead the person is **deactivated** (`active = 0`), which hides them from the
     participant picker while preserving all history. Deactivation is reversible (reactivate).
     An already-selected but since-deactivated participant stays visible on that existing bill.
-- Non-relational preferences (theme, language, split-rounding mode, onboarding flag) live
-  in **SharedPreferences**, not SQLite. Currency is per bill and lives on the `bill` row.
+- Non-relational preferences (theme, language, onboarding flag) live in
+  **SharedPreferences**, not SQLite. Currency is per bill and lives on the `bill` row.
 
 ---
 
@@ -282,7 +289,8 @@ party_contribution                 -- party mode: each thing a person paid for
      **add/remove participants** (with the same inline quick-add), not just amounts/items —
      removing a participant prunes their item assignments and party contributions.
 4. **Equal Split editor** — total amount, live per-person share preview.
-5. **Itemized editor** — item list, per-item people assignment, shared charges.
+5. **Itemized editor** — item list (with optional per-item packaging fee), per-item people
+   assignment, an order-level delivery fee, and who paid.
 6. **Party editor** — add contributions (who paid, amount, optional label); live grand
    total, equal share, and per-person balance (get back / owe) preview.
 7. **Bill Detail / Result** — per-person breakdown + settle-up ("who pays whom"). Opened
@@ -302,9 +310,11 @@ party_contribution                 -- party mode: each thing a person paid for
   `NumberFormat.simpleCurrency`, driven by **each bill's own currency** (`AmountText`
   accepts a per-bill currency code; a default formatter is provided as a fallback).
 - **Rounding:** all monetary math is done in **integer cents** to avoid floating-point
-  drift (`Money.distribute`). The distribution honours the selected `RoundingMode`
-  (largest-remainder / round-up / round-down). The split result carries a `roundingDelta`
-  (Σ shares − true total) that drives the Extra / Short / Exact indicator.
+  drift (`Money.distribute`). The distribution always uses
+  `RoundingMode.largestRemainder` app-wide — shares are floored and the leftover cent(s)
+  go to the leading share(s), so Σ shares == true total exactly; `Money.distribute` still
+  supports `roundUp` / `roundDown` for tests. The split result still exposes a
+  `roundingDelta` (Σ shares − true total), which is always 0 under the app's mode.
 - **Settle-up algorithm:** greedy min-transactions — repeatedly match the largest
   creditor with the largest debtor until all balances are zero. Shared by itemized and
   party modes: balances come from `paid − owedShare` in both cases.
@@ -312,9 +322,8 @@ party_contribution                 -- party mode: each thing a person paid for
   `balance = theirContributions − equalShare` (positive = reimbursed, negative = owes).
 - **Theming:** single source of truth for `ColorScheme` seeds; light/dark derived from
   Material 3 `ColorScheme.fromSeed`. Theme mode reactive via a `ThemeProvider`.
-- **Reactivity:** settings changes (theme, language, rounding mode) propagate immediately
-  via `provider` listeners. Per-bill currency is threaded through the widgets that render
-  amounts.
+- **Reactivity:** settings changes (theme, language) propagate immediately via `provider`
+  listeners. Per-bill currency is threaded through the widgets that render amounts.
 
 ---
 

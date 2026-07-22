@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/localization/generated/app_localizations.dart';
 import '../../../core/routing/route_names.dart';
-import '../../../shared/utils/rounding_mode.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/utils/app_language.dart';
 import 'settings_provider.dart';
@@ -21,28 +20,6 @@ class SettingsScreen extends StatelessWidget {
         return l10n.themeLight;
       case ThemeMode.dark:
         return l10n.themeDark;
-    }
-  }
-
-  String _roundingTitle(RoundingMode mode, AppLocalizations l10n) {
-    switch (mode) {
-      case RoundingMode.roundUp:
-        return l10n.roundingUpTitle;
-      case RoundingMode.roundDown:
-        return l10n.roundingDownTitle;
-      case RoundingMode.largestRemainder:
-        return l10n.roundingExactTitle;
-    }
-  }
-
-  String _roundingDetail(RoundingMode mode, AppLocalizations l10n) {
-    switch (mode) {
-      case RoundingMode.roundUp:
-        return l10n.roundingUpDetail;
-      case RoundingMode.roundDown:
-        return l10n.roundingDownDetail;
-      case RoundingMode.largestRemainder:
-        return l10n.roundingExactDetail;
     }
   }
 
@@ -98,35 +75,6 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          SectionHeader(title: l10n.settingsRounding),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(
-              l10n.settingsRoundingHint,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-            ),
-          ),
-          Card(
-            child: RadioGroup<RoundingMode>(
-              groupValue: settings.roundingMode,
-              onChanged: (mode) {
-                if (mode != null) settings.setRoundingMode(mode);
-              },
-              child: Column(
-                children: [
-                  for (final mode in RoundingMode.values)
-                    RadioListTile<RoundingMode>(
-                      value: mode,
-                      title: Text(_roundingTitle(mode, l10n)),
-                      subtitle: Text(_roundingDetail(mode, l10n)),
-                    ),
-                ],
-              ),
             ),
           ),
           const SizedBox(height: 8),

@@ -29,9 +29,4 @@ class AppPreferences {
 
   Future<void> setLanguageCode(String value) =>
       _prefs.setString(PreferenceKeys.languageCode, value);
-
-  String? get roundingMode => _prefs.getString(PreferenceKeys.roundingMode);
-
-  Future<void> setRoundingMode(String value) =>
-      _prefs.setString(PreferenceKeys.roundingMode, value);
 }

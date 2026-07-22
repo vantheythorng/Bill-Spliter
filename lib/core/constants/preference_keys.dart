@@ -5,5 +5,4 @@ class PreferenceKeys {
   static const String hasCompletedOnboarding = 'has_completed_onboarding';
   static const String themeMode = 'theme_mode';
   static const String languageCode = 'language_code';
-  static const String roundingMode = 'rounding_mode';
 }

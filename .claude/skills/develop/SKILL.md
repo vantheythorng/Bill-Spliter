@@ -65,10 +65,13 @@ in ARB values — it becomes Dart string interpolation in the generated code.
 **Money & rounding** → never do float division for shares. Convert to cents with
 `Money.toCents`, distribute with `Money.distribute(totalCents, count, mode: rounding)`, convert
 back with `Money.fromCents`. `RoundingMode` (`shared/utils/rounding_mode.dart`) is
-`roundUp` (default) / `roundDown` / `largestRemainder`. `SplitService.split(detail, rounding:)`
-returns a `Settlement` whose `roundingDelta` (Σ shares − true total) drives the
-Extra/Short/Exact `RoundingSummary`. The active mode comes from
-`SettingsProvider.roundingMode`, pushed into VMs via a plain `rounding` setter during `build`.
+`largestRemainder` (default) / `roundUp` / `roundDown`. The app uses **largestRemainder**
+(fair pay): shares are floored and the leftover cent goes to one participant, so every split
+sums to the exact total — one person (the payer, in settle-up) just pays a cent more, and
+there is no extra/short/lost reconciliation indicator. `SplitService.split(detail, rounding:)`
+returns a `Settlement` whose `roundingDelta` (Σ shares − true total) is always 0 under the
+app's mode. The active mode comes from `SettingsProvider.roundingMode`, pushed into VMs via a
+plain `rounding` setter during `build`.
 
 **Currency is per bill**, not a setting. It's chosen in the create flow and stored on
 `bill.currency_code`. Format amounts with `AmountText(amount, currencyCode: bill.currencyCode)`;

@@ -150,6 +150,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get itemQuantityLabel => 'Qty';
 
   @override
+  String get packagingFeeLabel => 'Packaging fee';
+
+  @override
+  String get deliveryFeeLabel => 'Delivery fee';
+
+  @override
   String get assignedToLabel => 'Shared by';
 
   @override
@@ -215,15 +221,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String owesAmount(Object amount) {
     return 'owes $amount';
   }
-
-  @override
-  String get roundingExtraLabel => 'Extra collected';
-
-  @override
-  String get roundingShortLabel => 'Short of total';
-
-  @override
-  String get roundingExactLabel => 'Adds up exactly';
 
   @override
   String get allSettled => 'All settled — nobody owes anything.';
@@ -298,31 +295,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseCurrency => 'Choose currency';
-
-  @override
-  String get settingsRounding => 'Rounding';
-
-  @override
-  String get settingsRoundingHint =>
-      'How to round each person\'s share when a bill doesn\'t divide evenly.';
-
-  @override
-  String get roundingUpTitle => 'Everyone pays the same (rounded up)';
-
-  @override
-  String get roundingUpDetail => '100 split 3 ways → 33.34 each';
-
-  @override
-  String get roundingDownTitle => 'Everyone pays the same (rounded down)';
-
-  @override
-  String get roundingDownDetail => '100 split 3 ways → 33.33 each';
-
-  @override
-  String get roundingExactTitle => 'Exact total, cents may differ';
-
-  @override
-  String get roundingExactDetail => '100 split 3 ways → 33.34, 33.33, 33.33';
 
   @override
   String get settingsPeople => 'Manage people';

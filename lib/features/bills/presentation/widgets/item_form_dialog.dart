@@ -42,6 +42,10 @@ class _ItemFormDialogState extends State<ItemFormDialog> {
       text: widget.initial != null ? widget.initial!.price.toString() : '');
   late final TextEditingController _quantity = TextEditingController(
       text: (widget.initial?.quantity ?? 1).toString());
+  late final TextEditingController _packaging = TextEditingController(
+      text: (widget.initial?.packagingFee ?? 0) > 0
+          ? widget.initial!.packagingFee.toString()
+          : '');
   late final Set<int> _assigned = {
     ...?widget.initial?.assignedPersonIds,
     // Default a brand-new item to everyone, matching the common case.
@@ -54,6 +58,7 @@ class _ItemFormDialogState extends State<ItemFormDialog> {
     _name.dispose();
     _price.dispose();
     _quantity.dispose();
+    _packaging.dispose();
     super.dispose();
   }
 
@@ -64,6 +69,7 @@ class _ItemFormDialogState extends State<ItemFormDialog> {
       name: _name.text.trim(),
       price: NumberParsing.tryParseAmount(_price.text) ?? 0,
       quantity: NumberParsing.tryParseInt(_quantity.text) ?? 1,
+      packagingFee: NumberParsing.tryParseAmount(_packaging.text) ?? 0,
       assignedPersonIds: _assigned.toList(),
     );
     Navigator.of(context).pop(item);
@@ -107,6 +113,11 @@ class _ItemFormDialogState extends State<ItemFormDialog> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 8),
+              AppTextField.amount(
+                controller: _packaging,
+                label: l10n.packagingFeeLabel,
               ),
               const SizedBox(height: 16),
               Align(

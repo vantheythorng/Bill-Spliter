@@ -150,6 +150,12 @@ class AppLocalizationsKm extends AppLocalizations {
   String get itemQuantityLabel => 'បរិមាណ';
 
   @override
+  String get packagingFeeLabel => 'ថ្លៃខ្ចប់';
+
+  @override
+  String get deliveryFeeLabel => 'ថ្លៃដឹកជញ្ជូន';
+
+  @override
   String get assignedToLabel => 'ចែករំលែកដោយ';
 
   @override
@@ -215,15 +221,6 @@ class AppLocalizationsKm extends AppLocalizations {
   String owesAmount(Object amount) {
     return 'ជំពាក់ $amount';
   }
-
-  @override
-  String get roundingExtraLabel => 'ប្រមូលបានលើស';
-
-  @override
-  String get roundingShortLabel => 'ខ្វះពីចំនួនសរុប';
-
-  @override
-  String get roundingExactLabel => 'បូកបានត្រឹមត្រូវ';
 
   @override
   String get allSettled => 'សងគ្នារួចរាល់ — គ្មាននរណាជំពាក់អ្វីទេ។';
@@ -299,31 +296,6 @@ class AppLocalizationsKm extends AppLocalizations {
 
   @override
   String get chooseCurrency => 'ជ្រើសរើសរូបិយប័ណ្ណ';
-
-  @override
-  String get settingsRounding => 'ការបង្គត់';
-
-  @override
-  String get settingsRoundingHint =>
-      'របៀបបង្គត់ចំណែករបស់មនុស្សម្នាក់ៗ នៅពេលវិក្កយបត្រចែកមិនស្មើគ្នា។';
-
-  @override
-  String get roundingUpTitle => 'ម្នាក់ៗបង់ស្មើគ្នា (បង្គត់ឡើង)';
-
-  @override
-  String get roundingUpDetail => '១០០ ចែក ៣ → ៣៣.៣៤ ម្នាក់';
-
-  @override
-  String get roundingDownTitle => 'ម្នាក់ៗបង់ស្មើគ្នា (បង្គត់ចុះ)';
-
-  @override
-  String get roundingDownDetail => '១០០ ចែក ៣ → ៣៣.៣៣ ម្នាក់';
-
-  @override
-  String get roundingExactTitle => 'សរុបត្រឹមត្រូវ សេនអាចខុសគ្នា';
-
-  @override
-  String get roundingExactDetail => '១០០ ចែក ៣ → ៣៣.៣៤, ៣៣.៣៣, ៣៣.៣៣';
 
   @override
   String get settingsPeople => 'គ្រប់គ្រងមនុស្ស';

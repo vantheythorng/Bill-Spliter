@@ -14,7 +14,6 @@ import '../../../core/repository/bills/bill_repository.dart';
 import '../../../core/services/bills/split_service.dart';
 import 'bill_editor_view_model.dart';
 import 'editor_navigation.dart';
-import 'widgets/rounding_summary.dart';
 
 /// Equal split editor: enter a total, see each person's share live.
 class EqualEditorScreen extends StatelessWidget {
@@ -93,14 +92,6 @@ class _EqualEditorView extends StatelessWidget {
                     amount: share.owed,
                     currencyCode: detail.bill.currencyCode,
                     amountStyle: Theme.of(context).textTheme.titleMedium,
-                  ),
-                if (viewModel.preview.shares.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: RoundingSummary(
-                      delta: viewModel.preview.roundingDelta,
-                      currencyCode: detail.bill.currencyCode,
-                    ),
                   ),
                 const SizedBox(height: 24),
                 FilledButton(

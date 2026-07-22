@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'app.dart';
 import 'core/config/flavor_config.dart';
@@ -9,6 +10,10 @@ import 'core/di/service_locator.dart';
 Future<void> bootstrap(Flavor flavor) async {
   FlavorConfig.initialize(flavor);
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   await setupServiceLocator();
   runApp(const BillSplitterApp());
 }

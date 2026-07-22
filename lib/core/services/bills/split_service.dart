@@ -60,21 +60,34 @@ class SplitService {
     final owedByPerson = {for (final id in personIds) id: 0};
     var trueTotalCents = 0;
 
-    // Split each item's line total equally among its assigned people, in cents,
-    // so per-item rounding never drifts from the item total.
+    // Split each item's line total (item cost + its packaging fee) equally
+    // among its assigned people, in cents, so per-item rounding never drifts
+    // from the item total.
     for (final item in detail.items) {
       final assigned =
           item.assignedPersonIds.where(personIds.contains).toList();
       if (assigned.isEmpty) continue;
-      trueTotalCents += Money.toCents(item.lineTotal);
+      trueTotalCents += Money.toCents(item.lineTotalWithFee);
       final shares = Money.distribute(
-        Money.toCents(item.lineTotal),
+        Money.toCents(item.lineTotalWithFee),
         assigned.length,
         mode: rounding,
       );
       for (var i = 0; i < assigned.length; i++) {
         owedByPerson[assigned[i]] =
             (owedByPerson[assigned[i]] ?? 0) + shares[i];
+      }
+    }
+
+    // The order-level delivery fee is shared equally by everyone on the bill.
+    final deliveryCents = Money.toCents(detail.bill.deliveryFee);
+    if (deliveryCents != 0) {
+      trueTotalCents += deliveryCents;
+      final shares =
+          Money.distribute(deliveryCents, personIds.length, mode: rounding);
+      for (var i = 0; i < personIds.length; i++) {
+        owedByPerson[personIds[i]] =
+            (owedByPerson[personIds[i]] ?? 0) + shares[i];
       }
     }
 

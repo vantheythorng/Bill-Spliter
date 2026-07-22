@@ -9,6 +9,7 @@ class BillItem {
     required this.name,
     required this.price,
     this.quantity = 1,
+    this.packagingFee = 0,
     this.assignedPersonIds = const [],
   });
 
@@ -17,10 +18,18 @@ class BillItem {
   final String name;
   final double price;
   final int quantity;
+
+  /// A flat packaging fee for this line (charged once, not per unit). Split
+  /// among the item's assigned people alongside the item cost.
+  final double packagingFee;
   final List<int> assignedPersonIds;
 
-  /// Total cost of this line (price × quantity).
+  /// Cost of the item itself (price × quantity), excluding any packaging fee.
   double get lineTotal => price * quantity;
+
+  /// What the item's sharers owe for this line: item cost plus the flat
+  /// packaging fee.
+  double get lineTotalWithFee => lineTotal + packagingFee;
 
   BillItem copyWith({
     int? id,
@@ -28,6 +37,7 @@ class BillItem {
     String? name,
     double? price,
     int? quantity,
+    double? packagingFee,
     List<int>? assignedPersonIds,
   }) {
     return BillItem(
@@ -36,6 +46,7 @@ class BillItem {
       name: name ?? this.name,
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
+      packagingFee: packagingFee ?? this.packagingFee,
       assignedPersonIds: assignedPersonIds ?? this.assignedPersonIds,
     );
   }
@@ -47,6 +58,7 @@ class BillItem {
       Db.itemName: name,
       Db.itemPrice: price,
       Db.itemQuantity: quantity,
+      Db.itemPackagingFee: packagingFee,
     };
   }
 
@@ -60,6 +72,7 @@ class BillItem {
       name: map[Db.itemName] as String,
       price: (map[Db.itemPrice] as num?)?.toDouble() ?? 0,
       quantity: (map[Db.itemQuantity] as int?) ?? 1,
+      packagingFee: (map[Db.itemPackagingFee] as num?)?.toDouble() ?? 0,
       assignedPersonIds: assignedPersonIds,
     );
   }

@@ -61,15 +61,17 @@ class _EqualEditorView extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                SectionHeader(title: l10n.billTitleLabel),
                 AppTextField(
-                  label: l10n.billTitleLabel,
+                  hint: l10n.billTitleHint,
                   initialValue: detail.bill.title,
                   textCapitalization: TextCapitalization.sentences,
                   onChanged: viewModel.setTitle,
                 ),
                 const SizedBox(height: 16),
+                SectionHeader(title: l10n.totalAmountLabel),
                 AppTextField.amount(
-                  label: l10n.totalAmountLabel,
+                  hint: l10n.totalAmountLabel,
                   initialValue: detail.bill.totalAmount > 0
                       ? detail.bill.totalAmount.toString()
                       : '',

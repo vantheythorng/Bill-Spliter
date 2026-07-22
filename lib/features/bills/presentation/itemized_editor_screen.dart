@@ -89,8 +89,9 @@ class _ItemizedEditorView extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
               children: [
+                SectionHeader(title: l10n.billTitleLabel),
                 AppTextField(
-                  label: l10n.billTitleLabel,
+                  hint: l10n.billTitleLabel,
                   initialValue: detail.bill.title,
                   textCapitalization: TextCapitalization.sentences,
                   onChanged: viewModel.setTitle,
@@ -117,19 +118,19 @@ class _ItemizedEditorView extends StatelessWidget {
                       item: viewModel.items[i],
                       subtitle: _assignedNames(viewModel, viewModel.items[i]),
                       currencyCode: detail.bill.currencyCode,
-                      onEdit: () =>
-                          _editItem(context, i, viewModel.items[i]),
+                      onEdit: () => _editItem(context, i, viewModel.items[i]),
                       onDelete: () => viewModel.removeItem(i),
                     ),
                 const SizedBox(height: 16),
                 SectionHeader(title: l10n.deliveryFeeLabel),
                 AppTextField.amount(
-                  label: l10n.deliveryFeeLabel,
+                  hint: l10n.deliveryFeeLabel,
                   initialValue: detail.bill.deliveryFee > 0
                       ? detail.bill.deliveryFee.toString()
                       : '',
-                  onChanged: (value) => viewModel
-                      .setDeliveryFee(NumberParsing.tryParseAmount(value) ?? 0),
+                  onChanged: (value) => viewModel.setDeliveryFee(
+                    NumberParsing.tryParseAmount(value) ?? 0,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 SectionHeader(title: l10n.paymentsLabel),
@@ -195,11 +196,15 @@ class _ItemTile extends StatelessWidget {
                     ),
                   if (hasFee) ...[
                     if (subtitle.isNotEmpty) const SizedBox(width: 8),
-                    Text('${l10n.packagingFeeLabel} ',
-                        style: theme.textTheme.bodySmall),
-                    AmountText(item.packagingFee,
-                        currencyCode: currencyCode,
-                        style: theme.textTheme.bodySmall),
+                    Text(
+                      '${l10n.packagingFeeLabel} ',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    AmountText(
+                      item.packagingFee,
+                      currencyCode: currencyCode,
+                      style: theme.textTheme.bodySmall,
+                    ),
                   ],
                 ],
               ),
@@ -265,7 +270,7 @@ class _PaidFieldState extends State<_PaidField> {
               controller: _controller,
               textAlign: TextAlign.end,
               isDense: true,
-              label: l10n.paidAmountLabel,
+              hint: l10n.paidAmountLabel,
               onChanged: (value) =>
                   widget.onChanged(NumberParsing.tryParseAmount(value) ?? 0),
             ),

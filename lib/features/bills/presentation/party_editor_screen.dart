@@ -94,8 +94,9 @@ class _PartyEditorView extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
         children: [
+          SectionHeader(title: l10n.billTitleLabel),
           AppTextField(
-            label: l10n.billTitleLabel,
+            hint: l10n.billTitleHint,
             initialValue: detail.bill.title,
             textCapitalization: TextCapitalization.sentences,
             onChanged: viewModel.setTitle,

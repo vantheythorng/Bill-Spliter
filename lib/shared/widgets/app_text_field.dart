@@ -76,6 +76,9 @@ class AppTextField extends StatelessWidget {
       validator: validator,
       onChanged: onChanged,
       onFieldSubmitted: onSubmitted,
+    onTapOutside: (event) {
+     FocusScope.of(context).unfocus();
+    },
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,

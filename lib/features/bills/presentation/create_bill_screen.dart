@@ -69,8 +69,8 @@ class _CreateBillView extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
+                SectionHeader(title: l10n.billTitleLabel),
                 AppTextField(
-                  label: l10n.billTitleLabel,
                   hint: l10n.billTitleHint,
                   textCapitalization: TextCapitalization.sentences,
                   onChanged: viewModel.setTitle,
@@ -112,8 +112,9 @@ class _CreateBillView extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 FilledButton(
-                  onPressed:
-                      viewModel.canProceed ? () => _proceed(context) : null,
+                  onPressed: viewModel.canProceed
+                      ? () => _proceed(context)
+                      : null,
                   child: Text(l10n.next),
                 ),
               ],
@@ -124,10 +125,7 @@ class _CreateBillView extends StatelessWidget {
 
 /// Lets the user pick the currency this bill is recorded in.
 class _CurrencySelector extends StatelessWidget {
-  const _CurrencySelector({
-    required this.selectedCode,
-    required this.onSelect,
-  });
+  const _CurrencySelector({required this.selectedCode, required this.onSelect});
 
   final String selectedCode;
   final ValueChanged<String> onSelect;
